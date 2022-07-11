@@ -1,10 +1,12 @@
 package com.example.Base.security;
 
-import com.example.Base.Filter.CustomAuthnticationFilter;
+import com.example.Base.Filter.CustomAuthenticationFilter;
 import com.example.Base.Filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,15 +35,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthnticationFilter customAuthnticationFilter = new CustomAuthnticationFilter(authenticationManagerBean());
-        customAuthnticationFilter.setFilterProcessesUrl("/api/login");
+        http.httpBasic().disable().anonymous();
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
         http.csrf().disable();
+        http.cors().disable(); //서로 출처가 다른 웹 애플리케이션에서 자원을 공유하는 것
+        http.formLogin().loginPage("/").loginProcessingUrl("/api/login").usernameParameter("email");
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**", "/").permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(customAuthnticationFilter); //아래 메서드 사용
+        http.addFilter(customAuthenticationFilter); //아래 메서드 사용
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
