@@ -21,7 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor//종속성 주입
-@Transactional//모든 클래스가 트랜잭션 되야함
+@Transactional//모든 클래스가 트랜잭션 되야함 -> 모든 작업들이 성공적이여만 묶음 결과를 적용 -> 에러가 나면 모든 작업들이 다시 원 상태로 되돌릴수 있다.
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
     
@@ -48,34 +48,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity saveUser(UserEntity user) {
+    public UserEntity saveUser(UserEntity user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
         return userRepository.save(user);
     }
 
     @Override
-    public RoleEntity saveRole(RoleEntity role) {
+    public RoleEntity saveRole(RoleEntity role) { //role 정보 DB에 저장
         log.info("Saving new user {} to the database", role.getName());
         return roleRepository.save(role);
     }
 
     @Override
-    public void addRoleToUser(String email, String roleName) {
+    public void addRoleToUser(String email, String roleName) {//user에 role추가
         log.info("Adding role {} to user {}", roleName, email);
-        UserEntity user = userRepository.findByEmail(email);//user찾기
-        RoleEntity role = roleRepository.findByName(roleName);//role찾기
-        user.getRoles().add(role);//user에 role 추가, @Transactional -> 모두 성공 or 모두 실패
+        UserEntity user = userRepository.findByEmail(email);//email로 user찾기
+        RoleEntity role = roleRepository.findByName(roleName);//rolename으로 role찾기
+        user.getRoles().add(role);//user의 role들을 가져오고 -> user에 role 추가, @Transactional -> 모두 성공 or 모두 실패
     }
 
     @Override
-    public UserEntity getUser(String email) {
+    public UserEntity getUser(String email) {//email로 유저 정보 가져오기
         log.info("Fetching user {}", email);
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public List<UserEntity> getUsers() {
+    public List<UserEntity> getUsers() { //모든 user 불러온다
         log.info("Fetching all users");
         return userRepository.findAll();
     }

@@ -23,8 +23,8 @@ import static org.springframework.http.HttpMethod.POST;
 @RequiredArgsConstructor //생성자 주입
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserDetailsService userDetailsService; //DB에서 유저 정보를 직접 가져오는 인터페이스
+    private final BCryptPasswordEncoder bCryptPasswordEncoder; //비밀 번호 암호화(BCrypt 해싱 함수)
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
