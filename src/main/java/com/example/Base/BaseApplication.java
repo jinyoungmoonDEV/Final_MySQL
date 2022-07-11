@@ -33,18 +33,15 @@ public class BaseApplication {
 			userService.saveRole(new RoleEntity(null, "ROLE_ADMIN"));
 			userService.saveRole(new RoleEntity(null, "ROLE_SUPER_ADMIN"));
 
-			userService.saveUser(new UserEntity(null , "Moon","mgy1017@gmail.com","1234", new ArrayList<>()));
-			userService.saveUser(new UserEntity(null , "a","a","1234", new ArrayList<>()));
-			userService.saveUser(new UserEntity(null , "b","b","1234", new ArrayList<>()));
-			userService.saveUser(new UserEntity(null , "c","c","1234", new ArrayList<>()));
+			userService.saveUser(new UserEntity(null , "Moon","admin@gmail.com","1234", new ArrayList<>()));
+			userService.saveUser(new UserEntity(null , "a","manager@gmail.com","1234", new ArrayList<>()));
+			userService.saveUser(new UserEntity(null , "b","user01@gmail.com","1234", new ArrayList<>()));
+			userService.saveUser(new UserEntity(null , "c","super@gmail.com","1234", new ArrayList<>()));
 
-			userService.addRoleToUser("mgy1017@gmail.com", "ROLE_USER");
-			userService.addRoleToUser("mgy1017@gmail.com", "ROLE_MANAGER");
-			userService.addRoleToUser("a", "ROLE_MANAGER");
-			userService.addRoleToUser("b", "ROLE_ADMIN");
-			userService.addRoleToUser("c", "ROLE_SUPER_ADMIN");
-			userService.addRoleToUser("c", "ROLE_ADMIN");
-			userService.addRoleToUser("c", "ROLE_ADMIN");
+			userService.addRoleToUser("admin@gmail.com", "ROLE_ADMIN");
+			userService.addRoleToUser("manager@gmail.com", "ROLE_MANAGER");
+			userService.addRoleToUser("user01@gmail.com", "ROLE_USER");
+			userService.addRoleToUser("super@gmail.com", "ROLE_SUPER_ADMIN");
 		};
 	}
 }
