@@ -7,7 +7,6 @@ import com.example.Base.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,6 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserEntity saveUser(UserEntity user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
+        addRoleToUser(user.getEmail(), "ROLE_USER");
         return userRepository.save(user);
     }
 

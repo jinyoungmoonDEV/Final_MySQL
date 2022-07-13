@@ -14,9 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.servlet.view.RedirectView;
 
-import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,7 +28,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor //생성자 주입
-@RequestMapping("/api")//아래에 있는 모든 mapping은 문자열을 포함해야한다.
+@RequestMapping("/api")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
 
