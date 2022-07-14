@@ -66,7 +66,7 @@ public class UserController {
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String email = decodedJWT.getSubject();
-                UserEntity user = userService.getUser(email);
+                UserEntity user = userService.getUser(email);//유저를 찾는다
                 String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 *1000))
@@ -77,7 +77,7 @@ public class UserController {
                 tokens.put("access_token", access_token);
                 tokens.put("refresh_token", refresh_token);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+                new ObjectMapper().writeValue(response.getOutputStream(), tokens); //토큰 전송
             }catch (Exception exception) {
                 response.setHeader("error", exception.getMessage());
                 response.setStatus(FORBIDDEN.value());

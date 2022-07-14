@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor//종속성 주입
 @Transactional//모든 클래스가 트랜잭션 되야함 -> 모든 작업들이 성공적이여만 묶음 결과를 적용 -> 에러가 나면 모든 작업들이 다시 원 상태로 되돌릴수 있다.
 @Slf4j
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService { //UserDetailsService에서 loadUserByUsername메소드 Override
     
     private final UserRepository userRepository;
     
@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserEntity saveUser(UserEntity user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
-        addRoleToUser(user.getEmail(), "ROLE_USER");
         return userRepository.save(user);
     }
 
