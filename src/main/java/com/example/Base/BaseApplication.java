@@ -3,10 +3,10 @@ package com.example.Base;
 import com.example.Base.domain.RoleEntity;
 import com.example.Base.domain.UserEntity;
 import com.example.Base.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 
 @SpringBootApplication
+@Slf4j
 public class BaseApplication {
 
 	public static void main(String[] args) {
@@ -40,7 +41,6 @@ public class BaseApplication {
 
 			userService.addRoleToUser("admin@gmail.com", "ROLE_ADMIN");
 			userService.addRoleToUser("manager@gmail.com", "ROLE_MANAGER");
-			userService.addRoleToUser("user01@gmail.com", "ROLE_USER");
 			userService.addRoleToUser("super@gmail.com", "ROLE_SUPER_ADMIN");
 		};
 	}

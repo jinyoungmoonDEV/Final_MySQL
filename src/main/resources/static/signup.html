@@ -20,12 +20,15 @@
     <label for="pw-input" class="form-label" >Password</label>
     <input type="password" class="form-control" id="pw-input"  placeholder = "Password">
   </div>
+    <div class="mb-3">
+      <label for="un-input" class="form-label" >UserName</label>
+      <input type="text" class="form-control" id="un-input"  placeholder = "UserName">
+    </div>
   <div class="mb-3 form-check">
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
     <label class="form-check-label" for="exampleCheck1">Check me out</label>
   </div>
   <button type="submit" class="btn btn-primary" id="submit">Submit</button>
-    <button type="submit" class="btn btn-primary" id="siguppage">SignUp</button>
 </form>
 
 
@@ -34,17 +37,19 @@
   <script>
       $('form').on('submit',function(e){
 
-        var a = document.getElementById('login-input').value;
-        var b = document.getElementById('pw-input').value;
+        var email = document.getElementById('login-input').value;
+        var password = document.getElementById('pw-input').value;
+        var username = document.getElementById('un-input').value;
 
-        console.log(a);
-        console.log(b);
+        console.log(email);
+        console.log(password);
+        console.lof(username);
 
         $.ajax({
           type : "POST",
 <!--          contentType: 'application/json',-->
-          url: "/api/login",
-          data: {"email":a, "password":b},
+          url: "/api/user/save",
+          data: {"email":email, "password":password, "username":username},
           success:function(data){
           console.log(a)},
         })

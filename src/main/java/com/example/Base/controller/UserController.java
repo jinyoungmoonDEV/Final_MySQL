@@ -6,10 +6,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.Base.domain.RoleEntity;
 import com.example.Base.domain.UserEntity;
+import com.example.Base.dto.ResponseDTO;
+import com.example.Base.dto.RoleDTO;
+import com.example.Base.dto.UserDTO;
 import com.example.Base.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +28,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Slf4j
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor //생성자 주입
 @RequestMapping("/api")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
@@ -39,15 +43,41 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<UserEntity>saveUser(@RequestBody UserEntity user){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());// = localhost8080:/api/user/save
-        return ResponseEntity.created(uri).body(userService.saveUser(user)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
+        try {
+            log.info(userDTO.getEmail());
+            UserEntity userEntity = UserEntity.builder()
+                    .email(userDTO.getEmail())
+                    .password(userDTO.getPassword())
+                    .username(userDTO.getUsername())
+                    .build();
+            log.info(String.valueOf(userEntity));
+
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());// = localhost8080:/api/user/save
+            return ResponseEntity.created(uri).body(userService.saveUser(userEntity)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+        } catch (Exception e) {
+            log.info("error");
+            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
     }
 
     @PostMapping("/role/save")
-    public ResponseEntity<RoleEntity>saveRole(@RequestBody RoleEntity role){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());// = localhost8080:/api/role/save
-        return ResponseEntity.created(uri).body(userService.saveRole(role));
+    public ResponseEntity<?>saveRole(@RequestBody RoleDTO roleDTO){
+        try {
+            RoleEntity roleEntity = RoleEntity.builder()
+                    .name(roleDTO.getName())
+                    .build();
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());// = localhost8080:/api/role/save
+            return ResponseEntity.created(uri).body(userService.saveRole(roleEntity));
+        } catch (Exception e) {
+            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
     }
 
     @PostMapping("/role/addtouser")

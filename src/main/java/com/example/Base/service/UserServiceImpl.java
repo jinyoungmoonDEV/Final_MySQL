@@ -6,6 +6,7 @@ import com.example.Base.repository.RoleRepository;
 import com.example.Base.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +24,7 @@ import java.util.List;
 @Transactional//모든 클래스가 트랜잭션 되야함 -> 모든 작업들이 성공적이여만 묶음 결과를 적용 -> 에러가 나면 모든 작업들이 다시 원 상태로 되돌릴수 있다.
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService { //UserDetailsService에서 loadUserByUsername메소드 Override
-    
+
     private final UserRepository userRepository;
     
     private final RoleRepository roleRepository;
@@ -47,15 +48,17 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     }
 
     @Override
-    public UserEntity saveUser(UserEntity user) { //유저 정보 DB에 저장
+    public UserEntity saveUser(final UserEntity user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
-        return userRepository.save(user);
+        userRepository.save(user);
+        addRoleToUser(user.getEmail(), "ROLE_USER");
+        return userRepository.findByEmail(user.getEmail());
     }
 
     @Override
     public RoleEntity saveRole(RoleEntity role) { //role 정보 DB에 저장
-        log.info("Saving new user {} to the database", role.getName());
+        log.info("Saving new role {} to the database", role.getName());
         return roleRepository.save(role);
     }
 
@@ -63,8 +66,12 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     public void addRoleToUser(String email, String roleName) {//user에 role추가
         log.info("Adding role {} to user {}", roleName, email);
         UserEntity user = userRepository.findByEmail(email);//email로 user찾기
+        log.info(String.valueOf(user));
         RoleEntity role = roleRepository.findByName(roleName);//rolename으로 role찾기
+        log.info(String.valueOf(role));
+        log.info(String.valueOf(user.getRoles()));
         user.getRoles().add(role);//user의 role들을 가져오고 -> user에 role 추가, @Transactional -> 모두 성공 or 모두 실패
+        log.info("ok");
     }
 
     @Override
