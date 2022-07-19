@@ -1,7 +1,7 @@
 package com.example.Base.security;
 
-import com.example.Base.filter.CustomAuthenticationFilter;
-import com.example.Base.filter.CustomAuthorizationFilter;
+import com.example.Base.security.filter.CustomAuthenticationFilter;
+import com.example.Base.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

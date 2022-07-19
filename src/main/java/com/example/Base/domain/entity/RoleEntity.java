@@ -1,5 +1,6 @@
-package com.example.Base.domain;
+package com.example.Base.domain.entity;
 
+import com.example.Base.domain.dto.RoleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,11 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+
+    public RoleDTO toDTO(){
+        RoleDTO roleDTO = new RoleDTO().builder()
+                .name(name)
+                .build();
+        return roleDTO;
+    }
 }

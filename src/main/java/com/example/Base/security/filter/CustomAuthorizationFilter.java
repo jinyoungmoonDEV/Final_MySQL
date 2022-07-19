@@ -1,4 +1,4 @@
-package com.example.Base.filter;
+package com.example.Base.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

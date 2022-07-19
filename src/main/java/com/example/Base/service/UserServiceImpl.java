@@ -1,12 +1,11 @@
 package com.example.Base.service;
 
-import com.example.Base.domain.RoleEntity;
-import com.example.Base.domain.UserEntity;
+import com.example.Base.domain.entity.RoleEntity;
+import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.RoleRepository;
 import com.example.Base.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

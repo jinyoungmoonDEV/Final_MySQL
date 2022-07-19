@@ -1,15 +1,18 @@
-package com.example.Base.dto;
+package com.example.Base.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.util.List;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDTO {
-    private Long id;
-    private String name;
+@Data
+public class ResponseDTO<T> {
+	private String error;
+	private List<T> data;
 }
+

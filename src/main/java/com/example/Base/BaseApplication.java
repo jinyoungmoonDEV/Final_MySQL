@@ -1,7 +1,7 @@
 package com.example.Base;
 
-import com.example.Base.domain.RoleEntity;
-import com.example.Base.domain.UserEntity;
+import com.example.Base.domain.entity.RoleEntity;
+import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

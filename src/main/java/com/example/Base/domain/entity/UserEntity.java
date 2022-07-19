@@ -1,6 +1,7 @@
-package com.example.Base.domain;
+package com.example.Base.domain.entity;
 
-import com.example.Base.dto.UserDTO;
+import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.entity.RoleEntity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Data //Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,7 +1,7 @@
 package com.example.Base.service;
 
-import com.example.Base.domain.RoleEntity;
-import com.example.Base.domain.UserEntity;
+import com.example.Base.domain.entity.RoleEntity;
+import com.example.Base.domain.entity.UserEntity;
 
 import java.util.List;
 
