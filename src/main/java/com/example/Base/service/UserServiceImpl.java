@@ -65,12 +65,8 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     public void addRoleToUser(String email, String roleName) {//user에 role추가
         log.info("Adding role {} to user {}", roleName, email);
         UserEntity user = userRepository.findByEmail(email);//email로 user찾기
-        log.info(String.valueOf(user));
         RoleEntity role = roleRepository.findByName(roleName);//rolename으로 role찾기
-        log.info(String.valueOf(role));
-        log.info(String.valueOf(user.getRoles()));
         user.getRoles().add(role);//user의 role들을 가져오고 -> user에 role 추가, @Transactional -> 모두 성공 or 모두 실패
-        log.info("ok");
     }
 
     @Override

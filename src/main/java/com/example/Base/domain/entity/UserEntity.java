@@ -1,7 +1,6 @@
 package com.example.Base.domain.entity;
 
 import com.example.Base.domain.dto.UserDTO;
-import com.example.Base.domain.entity.RoleEntity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 

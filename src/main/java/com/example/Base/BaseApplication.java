@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 
 @SpringBootApplication
-@Slf4j
 public class BaseApplication {
 
 	public static void main(String[] args) {

@@ -1,15 +1,12 @@
 package com.example.Base.domain.entity;
 
 import com.example.Base.domain.dto.RoleDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data //Getter, Setter, toString
+@Getter //Getter, Setter, toString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

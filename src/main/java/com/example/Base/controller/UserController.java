@@ -5,10 +5,13 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.Base.domain.entity.RoleEntity;
+import com.example.Base.domain.entity.TokenEntity;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.domain.dto.ResponseDTO;
 import com.example.Base.domain.dto.RoleDTO;
 import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.repository.TokenRepository;
+import com.example.Base.repository.UserRepository;
 import com.example.Base.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -36,6 +39,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class UserController {
     private final UserService userService;
 
+    private final TokenRepository tokenRepository;
+
     @GetMapping("/users") //모든 유저 불러온다
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
     public ResponseEntity<List<UserEntity>>getUsers(){
@@ -45,16 +50,11 @@ public class UserController {
     @PostMapping("/user/save")
     public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
         try {
-            log.info(userDTO.getEmail());
-            UserEntity userEntity = UserEntity.builder()
-                    .email(userDTO.getEmail())
-                    .password(userDTO.getPassword())
-                    .username(userDTO.getUsername())
-                    .build();
-            log.info(String.valueOf(userEntity));
+            UserEntity userEntity = userDTO.toEntity();
 
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());// = localhost8080:/api/user/save
             return ResponseEntity.created(uri).body(userService.saveUser(userEntity)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+
         } catch (Exception e) {
             log.info("error");
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
@@ -67,9 +67,7 @@ public class UserController {
     @PostMapping("/role/save")
     public ResponseEntity<?>saveRole(@RequestBody RoleDTO roleDTO){
         try {
-            RoleEntity roleEntity = RoleEntity.builder()
-                    .name(roleDTO.getName())
-                    .build();
+            RoleEntity roleEntity = roleDTO.toEntity();
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());// = localhost8080:/api/role/save
             return ResponseEntity.created(uri).body(userService.saveRole(roleEntity));
         } catch (Exception e) {
@@ -108,6 +106,13 @@ public class UserController {
                 tokens.put("refresh_token", refresh_token);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens); //토큰 전송
+
+                TokenEntity tokenEntity = TokenEntity.builder()
+                        .id(decodedJWT.getId())
+                        .refreshtoken(refresh_token)
+                        .build();
+                tokenRepository.save(tokenEntity);
+
             }catch (Exception exception) {
                 response.setHeader("error", exception.getMessage());
                 response.setStatus(FORBIDDEN.value());
