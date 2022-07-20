@@ -50,6 +50,7 @@ public class UserController {
     @PostMapping("/user/save")
     public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
         try {
+            log.info(String.valueOf(userDTO));
             UserEntity userEntity = userDTO.toEntity();
 
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());// = localhost8080:/api/user/save
@@ -96,7 +97,7 @@ public class UserController {
                 String email = decodedJWT.getSubject();
                 UserEntity user = userService.getUser(email);//유저를 찾는다
                 String access_token = JWT.create()
-                        .withSubject(user.getUsername())
+                        .withSubject(user.getName())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 *1000))
                         .withIssuer(request.getRequestURI().toString())
                         .withClaim("roles", user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toList()))

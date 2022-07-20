@@ -48,10 +48,10 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
 
     @Override
     public UserEntity saveUser(final UserEntity user) { //유저 정보 DB에 저장
-        log.info("Saving new user {} to the database", user.getUsername());
+        log.info("Saving new user {} to the database", user.getName());
         user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
         userRepository.save(user);
-        addRoleToUser(user.getEmail(), "ROLE_USER");
+        //addRoleToUser(user.getEmail(), "ROLE_USER");
         return userRepository.findByEmail(user.getEmail());
     }
 

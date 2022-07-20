@@ -19,7 +19,7 @@ public class UserEntity {
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
-    private String username;
+    private String name;
     private String email;
     private String password;
 
@@ -28,7 +28,7 @@ public class UserEntity {
 
     public UserDTO toDTO() {
         UserDTO userDTO = UserDTO.builder()
-                .username(username)
+                .name(name)
                 .password(password)
                 .email(email)
                 .build();

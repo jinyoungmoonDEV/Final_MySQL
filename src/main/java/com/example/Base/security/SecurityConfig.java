@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
         customAuthenticationFilter.setFilterProcessesUrl("/api/login"); //custom한 필터를 처리하는 url 설정
 
         http.csrf().disable(); //보안을 위해 disable
-        //http.cors().disable(); //서로 출처가 다른 웹 애플리케이션에서 자원을 공유하는 것, react연동시 해제하고 proxy 설정
+        http.cors(); //서로 출처가 다른 웹 애플리케이션에서 자원을 공유하는 것, react연동시 해제하고 proxy 설정
 
         //http.formLogin().loginPage("/").loginProcessingUrl("/api/login").usernameParameter("email"); //loginpage url 설정하고, login 인증 처리하는 url 설정하여 인증하는 필터를 호출
 

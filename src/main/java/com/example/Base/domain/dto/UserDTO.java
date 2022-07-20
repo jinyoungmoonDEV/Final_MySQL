@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDTO {
     private String id;
-    private String username;
+    private String name;
     private String email;
     private String password;
 
@@ -20,7 +20,7 @@ public class UserDTO {
     public UserEntity toEntity() {
         UserEntity userEntity = UserEntity.builder()
                 .email(email)
-                .username(username)
+                .name(name)
                 .password(password)
                 .build();
         return userEntity;
