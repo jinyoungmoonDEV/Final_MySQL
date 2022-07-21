@@ -1,15 +1,23 @@
 package com.example.Base.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.Base.domain.entity.TokenEntity;
+import lombok.*;
 
 @Builder
-@Data
+@Getter@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenDTO {
-    private String id;
+    private String email;
+    private String accesstoken;
     private String refreshtoken;
+
+    public TokenEntity toEntity(){
+        TokenEntity tokenEntity = TokenEntity.builder()
+                .email(email)
+                .accesstoken(accesstoken)
+                .refreshtoken(refreshtoken)
+                .build();
+        return tokenEntity;
+    }
 }

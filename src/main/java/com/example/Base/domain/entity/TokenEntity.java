@@ -1,9 +1,6 @@
 package com.example.Base.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,11 +11,13 @@ import javax.persistence.Table;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "token")
 public class TokenEntity {
     @Id
-    private String id;
-    private String refreshtoken;
+    private String email;
 
+    private String accesstoken;
+    private String refreshtoken;
 
 }

@@ -1,24 +1,46 @@
 package com.example.Base.service;
 
-import com.example.Base.domain.entity.TokenEntity;
+import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.entity.UserEntity;
+import com.example.Base.repository.UserRepository;
+import com.example.Base.security.TokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+@RequiredArgsConstructor
+@Service
 public class TokenServiceImpl implements TokenService{
-    @Override
-    public TokenEntity checkExpiration(String accesstoken) {
-        try{
-            //유효 한지 검사
-            //유효하면 do filter
-            return null;
-        } catch (Exception e){
-            //유효 하지 않으면
-            //re 유효한지 검사
 
-            //유효 하면 ac와 re 정보 비교
-            //같으면 토큰 재발급
-            //다르면 error return 다시 로그인! -> token 삭제
-            
-            //유효하지 않으면 다시 로그인 요청 으로 리턴
-            return null;
+    private final UserRepository userRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final TokenProvider tokenProvider;
+
+    @Override
+    public void loginMethod(UserDTO userDTO, HttpServletResponse response) {
+
+        UserEntity info = userRepository.findByEmail(userDTO.getEmail());
+
+        if(info == null){
+            throw new UsernameNotFoundException("User not found in the database");
+        }
+
+        else {
+            String password = info.getPassword();
+            boolean verify = passwordEncoder.matches(userDTO.getPassword(), password);
+
+            if(verify){
+                tokenProvider.createToken(userDTO, response);
+
+            }
+
+            else {
+                throw new RuntimeException("WrongPassword");
+            }
         }
     }
 }

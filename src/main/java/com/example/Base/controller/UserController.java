@@ -12,11 +12,14 @@ import com.example.Base.domain.dto.RoleDTO;
 import com.example.Base.domain.dto.UserDTO;
 import com.example.Base.repository.TokenRepository;
 import com.example.Base.repository.UserRepository;
+import com.example.Base.service.TokenServiceImpl;
 import com.example.Base.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,14 +35,15 @@ import java.util.stream.Collectors;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
-@Slf4j
+@Log4j2
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor //생성자 주입
 @RequestMapping("/api")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
 
-    private final TokenRepository tokenRepository;
+
+    private final TokenServiceImpl tokenService;
 
     @GetMapping("/users") //모든 유저 불러온다
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
@@ -47,8 +51,38 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUsers()); //ResponseEntity.ok() => 200 OK status 코드를 반환하는 빌더 메서드
     }
 
+//    @PostMapping("/login")
+/*    public ResponseEntity login(HttpServletResponse response){
+        String a = response.getHeader("test");
+        log.info(a);
+        return ResponseEntity.ok().body(tokenRepository.save());
+    }*/
+
+//    @PostMapping("/login")
+//    public ResponseEntity login(UserDTO userDTO) {
+//        log.info("너두?");
+//        String email = userDTO.getEmail();
+//        return ResponseEntity.ok().body(email);
+//    }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
+        try {
+             tokenService.loginMethod(userDTO, response);
+
+            return ResponseEntity.ok().body("성공!");
+
+        } catch (Exception e) {
+            log.info("error");
+            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
     @PostMapping("/user/save")
-    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
         try {
             log.info(String.valueOf(userDTO));
             UserEntity userEntity = userDTO.toEntity();
@@ -66,7 +100,7 @@ public class UserController {
     }
 
     @PostMapping("/role/save")
-    public ResponseEntity<?>saveRole(@RequestBody RoleDTO roleDTO){
+    public ResponseEntity saveRole(@RequestBody RoleDTO roleDTO){
         try {
             RoleEntity roleEntity = roleDTO.toEntity();
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());// = localhost8080:/api/role/save
@@ -80,12 +114,12 @@ public class UserController {
     }
 
     @PostMapping("/role/addtouser")
-    public ResponseEntity<?>addRoleToUser(@RequestBody RoleToUserForm form){
+    public ResponseEntity addRoleToUser(@RequestBody RoleToUserForm form){
         userService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build(); //.ok는 200으로 연결 되었을떄.
     }
 
-    @GetMapping("/token/refresh")
+ /*   @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -109,7 +143,7 @@ public class UserController {
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens); //토큰 전송
 
                 TokenEntity tokenEntity = TokenEntity.builder()
-                        .id(decodedJWT.getId())
+                        .email(user.getEmail())
                         .refreshtoken(refresh_token)
                         .build();
                 tokenRepository.save(tokenEntity);
@@ -126,7 +160,7 @@ public class UserController {
         } else {
             throw new RuntimeException("Refresh token is missing");
         }
-    }
+    }*/
 }
 
 @Data

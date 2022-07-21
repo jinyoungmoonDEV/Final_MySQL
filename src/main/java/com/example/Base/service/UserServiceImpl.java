@@ -4,6 +4,7 @@ import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.RoleRepository;
 import com.example.Base.repository.UserRepository;
+import com.example.Base.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor//종속성 주입
@@ -29,6 +31,8 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final TokenProvider tokenProvider;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { //DB에서 유저 정보를 불러오는 중요한 메소드
