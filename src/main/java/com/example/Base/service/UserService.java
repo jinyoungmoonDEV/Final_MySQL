@@ -5,7 +5,6 @@ import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.domain.entity.UserEntity;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserService {
     UserEntity saveUser(UserDTO userDTO); //return tpye이 Entity

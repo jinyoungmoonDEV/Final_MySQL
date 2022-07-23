@@ -1,6 +1,5 @@
 package com.example.Base.domain.dto;
 
-import com.example.Base.domain.entity.RoleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

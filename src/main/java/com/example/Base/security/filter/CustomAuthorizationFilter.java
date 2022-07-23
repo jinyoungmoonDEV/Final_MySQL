@@ -65,6 +65,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken); //갖고있는 정보를 토대로 security가 권한에따라서 접근 할수 있는지 없는지 판단하기 위해 authention으로 설정, SecurityContextHolder는 security가 인증한 내용들을 갖고 있는것
 
                     filterChain.doFilter(request, response);//요청이 계속 지속(요청에서 응답까지) 되어야 하므로 filterchain 호출한다.
+
                 }catch (Exception exception) {
 
                     log.error("Error logging in: {}", exception.getMessage());
