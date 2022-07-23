@@ -4,10 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.Base.service.TokenServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +26,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j
+@Log4j2
 public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerRequestFilter가 application에 오는 모든 request를 다 인터셉트함(토큰확인 후 서비스 하기위함)
 
 
@@ -70,7 +68,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     log.error("Error logging in: {}", exception.getMessage());
 
-                    response.setHeader("error", exception.getMessage()); //header에  문자열"error" 보낸다.
+                    response.setHeader("error", "Token has expired"); //header에  문자열"error" 보낸다.
 
                     response.setStatus(FORBIDDEN.value()); //forbidden error code로 보낸다.
 
@@ -78,7 +76,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     Map<String, String> error = new HashMap<>();
 
-                    error.put("error_message", exception.getMessage()); //문자열과 함께 error메세지 저장
+                    error.put("error_message", "Token has expired"); //문자열과 함께 error메세지 저장
 
                     response.setContentType(APPLICATION_JSON_VALUE);
 

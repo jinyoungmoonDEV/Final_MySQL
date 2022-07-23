@@ -55,6 +55,12 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     }
 
     @Override
+    public UserEntity getUser(String email) {//email로 유저 정보 가져오기
+        log.info("Fetching user {}", email);
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public UserEntity saveUser(final UserDTO user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getName());
 
