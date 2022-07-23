@@ -1,6 +1,5 @@
 package com.example.Base.security;
 
-import com.example.Base.security.filter.CustomAuthenticationFilter;
 import com.example.Base.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
@@ -46,13 +46,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//session사용 안하므로 STATELESS로 끄기
 
-        http.authorizeRequests().antMatchers("/api/test","/api/login/**", "/api/token/refresh/**").permitAll();
+        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "/api/user/save/**").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/helper/**").hasAuthority("ROLE_HELPER");
+        http.authorizeRequests().antMatchers(POST, "/api/user/save/**", "/api/helper/save/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated(); //나머지 리퀘스트들은 인증이 필요하다
 
-/*        http.addFilter(customAuthenticationFilter); //아래 메서드 사용
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class); //지정된 필터 앞에 커스텀 필터를 추가 하여 먼저 실행*/
+//        http.addFilter(customAuthenticationFilter); //아래 메서드 사용
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class); //지정된 필터 앞에 커스텀 필터를 추가 하여 먼저 실행
     }
 
     @Bean

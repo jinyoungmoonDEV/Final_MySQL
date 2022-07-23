@@ -41,8 +41,6 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @RequestMapping("/api")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
-
-
     private final TokenServiceImpl tokenService;
 
     @GetMapping("/users") //모든 유저 불러온다
@@ -51,26 +49,12 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUsers()); //ResponseEntity.ok() => 200 OK status 코드를 반환하는 빌더 메서드
     }
 
-//    @PostMapping("/login")
-/*    public ResponseEntity login(HttpServletResponse response){
-        String a = response.getHeader("test");
-        log.info(a);
-        return ResponseEntity.ok().body(tokenRepository.save());
-    }*/
-
-//    @PostMapping("/login")
-//    public ResponseEntity login(UserDTO userDTO) {
-//        log.info("너두?");
-//        String email = userDTO.getEmail();
-//        return ResponseEntity.ok().body(email);
-//    }
-
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
 
-            return ResponseEntity.ok().body("성공!");
+            return ResponseEntity.ok().body("로그인 성공!");
 
         } catch (Exception e) {
             log.info("error");
@@ -84,11 +68,10 @@ public class UserController {
     @PostMapping("/user/save")
     public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
         try {
-            log.info(String.valueOf(userDTO));
-            UserEntity userEntity = userDTO.toEntity();
+            userDTO.setRole("ROLE_USER");
 
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());// = localhost8080:/api/user/save
-            return ResponseEntity.created(uri).body(userService.saveUser(userEntity)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+            return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
             log.info("error");
@@ -99,26 +82,22 @@ public class UserController {
         }
     }
 
-    @PostMapping("/role/save")
-    public ResponseEntity saveRole(@RequestBody RoleDTO roleDTO){
+    @PostMapping("/helper/save")
+    public ResponseEntity saveHelper(@RequestBody UserDTO userDTO) {
         try {
-            RoleEntity roleEntity = roleDTO.toEntity();
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());// = localhost8080:/api/role/save
-            return ResponseEntity.created(uri).body(userService.saveRole(roleEntity));
+            userDTO.setRole("ROLE_HELPER");
+
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/helper/save").toUriString());// = localhost8080:/api/user/save
+            return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+
         } catch (Exception e) {
+            log.info("error");
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
         }
     }
-
-    @PostMapping("/role/addtouser")
-    public ResponseEntity addRoleToUser(@RequestBody RoleToUserForm form){
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
-        return ResponseEntity.ok().build(); //.ok는 200으로 연결 되었을떄.
-    }
-
  /*   @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);

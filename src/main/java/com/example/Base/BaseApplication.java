@@ -1,5 +1,6 @@
 package com.example.Base;
 
+import com.example.Base.domain.dto.UserDTO;
 import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.UserService;
@@ -29,18 +30,13 @@ public class BaseApplication {
 	CommandLineRunner run(UserService userService) {
 		return args -> {
 			userService.saveRole(new RoleEntity(null, "ROLE_USER"));
-			userService.saveRole(new RoleEntity(null, "ROLE_MANAGER"));
+			userService.saveRole(new RoleEntity(null, "ROLE_HELPER"));
 			userService.saveRole(new RoleEntity(null, "ROLE_ADMIN"));
-			userService.saveRole(new RoleEntity(null, "ROLE_SUPER_ADMIN"));
 
-			userService.saveUser(new UserEntity(null , "Moon","admin@gmail.com","1234", new ArrayList<>()));
-			userService.saveUser(new UserEntity(null , "a","manager@gmail.com","1234", new ArrayList<>()));
-			userService.saveUser(new UserEntity(null , "b","user01@gmail.com","1234", new ArrayList<>()));
-			userService.saveUser(new UserEntity(null , "c","super@gmail.com","1234", new ArrayList<>()));
+			userService.saveUser(new UserDTO(null , "user","user@gmail.com","1234","ROLE_USER"));
+			userService.saveUser(new UserDTO(null , "helper","helper@gmail.com","1234","ROLE_HELPER"));
+			userService.saveUser(new UserDTO(null , "admin","admin@gmail.com","1234","ROLE_ADMIN"));
 
-			userService.addRoleToUser("admin@gmail.com", "ROLE_ADMIN");
-			userService.addRoleToUser("manager@gmail.com", "ROLE_MANAGER");
-			userService.addRoleToUser("super@gmail.com", "ROLE_SUPER_ADMIN");
 		};
 	}
 }

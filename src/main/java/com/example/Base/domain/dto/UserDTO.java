@@ -16,12 +16,15 @@ public class UserDTO {
     private String email;
     private String password;
 
+    private String role;
+
 
     public UserEntity toEntity() {
         UserEntity userEntity = UserEntity.builder()
                 .email(email)
                 .name(name)
                 .password(password)
+                .role(role)
                 .build();
         return userEntity;
     }

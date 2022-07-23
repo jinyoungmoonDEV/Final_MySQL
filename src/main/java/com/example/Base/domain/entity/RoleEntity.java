@@ -16,11 +16,4 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-
-    public RoleDTO toDTO(){
-        RoleDTO roleDTO = new RoleDTO().builder()
-                .name(name)
-                .build();
-        return roleDTO;
-    }
 }

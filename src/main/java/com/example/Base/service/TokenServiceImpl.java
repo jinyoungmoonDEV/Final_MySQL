@@ -5,6 +5,7 @@ import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.UserRepository;
 import com.example.Base.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class TokenServiceImpl implements TokenService{
 
     private final UserRepository userRepository;
@@ -22,9 +24,9 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public void loginMethod(UserDTO userDTO, HttpServletResponse response) {
-
+        log.info(userDTO.getEmail());
         UserEntity info = userRepository.findByEmail(userDTO.getEmail());
-
+        log.info(info);
         if(info == null){
             throw new UsernameNotFoundException("User not found in the database");
         }
