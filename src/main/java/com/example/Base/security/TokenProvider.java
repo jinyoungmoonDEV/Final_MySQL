@@ -27,7 +27,7 @@ public class TokenProvider {
                 .withSubject(user.getEmail())//이름을 유일한 유저 정보로 하여 토큰의 중복 방지
                 .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 *1000)) //기간 설정 -> 지금으로 부터 + ???
                 .withIssuer(user.getName())
-                .withClaim("roles", user.getRole())
+                .withClaim("role", user.getRole())
                 .sign(algorithm);
 
         String refreshtoken = JWT.create() //refresh token 생성
@@ -45,5 +45,9 @@ public class TokenProvider {
                 .build();
 
         tokenRepository.save(tokenDTO.toEntity());
+    }
+
+    public void refreshToken(UserDTO user, HttpServletResponse response) {
+
     }
 }

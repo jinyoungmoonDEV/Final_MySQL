@@ -48,14 +48,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     String email = decodedJWT.getSubject(); //decode해서 유저정보를 얻어오는 변수
 
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class); //roles라는 key값의 value는 유저의 권한이 있으므로 권한을 가져오는 변수, 권한이 여러개 일 수 있으므로 배열 형식
+                    String role = decodedJWT.getClaim("role").toString(); //roles라는 key값의 value는 유저의 권한이 있으므로 권한을 가져오는 변수, 권한이 여러개 일 수 있으므로 배열 형식
 
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>(); //authorities 변수를 Collection형식으로 생성, Parameter를 SimpleGrantedAuthority로 하는 이유는
                                                                                         // security에서의 권한은 GrantedAuthority 인터페이스를 구현한 객체로 만들면되는데 총 4가지중 문자열만 저장하는 SimpleGrandAuthority사용 하였다
-
-                    stream(roles).forEach(role -> { //stream을 이용해서 함수형으로 authorities 변수에 권한 정보 add한다.
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
+                    authorities.add(new SimpleGrantedAuthority(role));
 
                     UsernamePasswordAuthenticationToken authenticationToken = //UsernamePasswordAuthenticationToken를 쓰는 이유는 security에 유저정보 전달을 위해서
                             new UsernamePasswordAuthenticationToken(email,null, authorities); //유저정보(email, 권한) 정보를 담은 authenticationToken 변수 생성, password는 필요없어서 null
@@ -68,7 +65,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     log.error("Error logging in: {}", exception.getMessage());
 
-                    response.setHeader("error", "Token has expired"); //header에  문자열"error" 보낸다.
+                    response.setHeader("error", "Token has expired" + exception.getMessage()); //header에  문자열"error" 보낸다.
 
                     response.setStatus(FORBIDDEN.value()); //forbidden error code로 보낸다.
 
