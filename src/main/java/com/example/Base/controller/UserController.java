@@ -105,7 +105,7 @@ public class UserController {
                 String email = decodedJWT.getSubject();
 
                 UserEntity user = userService.getUser(email);//유저를 찾는다
-                tokenService.refreshToken(user, response);
+                tokenService.refreshToken(user.toDTO(), response);
 
                 Map<String, String> message = new HashMap<>();
                 message.put("message","Refresh The Token");

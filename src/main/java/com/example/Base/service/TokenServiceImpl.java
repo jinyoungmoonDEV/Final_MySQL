@@ -6,7 +6,6 @@ import com.example.Base.repository.UserRepository;
 import com.example.Base.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,8 +46,7 @@ public class TokenServiceImpl implements TokenService{
     }
 
     @Override
-    public void refreshToken(UserEntity user, HttpServletResponse response) {
-        tokenProvider.createToken(user.toDTO(), response);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    public void refreshToken(UserDTO user, HttpServletResponse response) {
+        tokenProvider.createToken(user, response);
     }
 }

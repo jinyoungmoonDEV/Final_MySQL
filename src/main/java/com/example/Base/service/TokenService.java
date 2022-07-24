@@ -9,5 +9,5 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public interface TokenService {
     void loginMethod(UserDTO userDTO, HttpServletResponse response);
-    void refreshToken(UserEntity user, HttpServletResponse response);
+    void refreshToken(UserDTO user, HttpServletResponse response);
 }

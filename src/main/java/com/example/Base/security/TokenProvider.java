@@ -37,7 +37,6 @@ public class TokenProvider {
                 .sign(algorithm);
 
         response.setHeader("access_token", accesstoken);
-//        response.setHeader("refresh_token", refreshtoken);
 
         TokenDTO tokenDTO = TokenDTO.builder()
                 .email(user.getEmail())
@@ -45,9 +44,5 @@ public class TokenProvider {
                 .build();
 
         tokenRepository.save(tokenDTO.toEntity());
-    }
-
-    public void refreshToken(UserDTO user, HttpServletResponse response) {
-
     }
 }
