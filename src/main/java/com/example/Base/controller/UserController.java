@@ -93,15 +93,15 @@ public class UserController {
 
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        String refresh_token = request.getHeader("refresh_token");
+        if(refresh_token != null && refresh_token.startsWith("Bearer ")) {
             try {
-                String past_token = authorizationHeader.substring("Bearer ".length());
+                String past_token = refresh_token.substring("Bearer ".length());
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-/*                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(past_token);*/
 
-                DecodedJWT decodedJWT = JWT.require(algorithm).build().verify(past_token);
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(past_token);
+
                 String email = decodedJWT.getSubject();
 
                 UserEntity user = userService.getUser(email);//유저를 찾는다
