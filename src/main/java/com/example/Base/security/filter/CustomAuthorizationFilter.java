@@ -32,7 +32,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/api/login") || request.getServletPath().equals("/api/token/refresh")) { //로그인이나 토큰 재발급은 필터를 거칠 필요없어서 바로 보내버린다.
+        if(request.getServletPath().equals("/api/login")) { //로그인이나 토큰 재발급은 필터를 거칠 필요없어서 바로 보내버린다.
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);//token의 key를 확인하기위해 header를 불러오는 변수 생성
@@ -62,10 +62,42 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
                     filterChain.doFilter(request, response);//요청이 계속 지속(요청에서 응답까지) 되어야 하므로 filterchain 호출한다.
 
                 }catch (Exception exception) {
+                    if (request.getServletPath().equals("/api/token/refresh")){
 
-                    log.error("Error logging in: {}", exception.getMessage());
+                        if (exception.getMessage().startsWith("The Token's Signature")) { //조작된 토큰 일때
+                            log.error("Error logging in: {}", exception.getMessage());
+                            response.setHeader("error", "Incorrect Token Do Re-Login");
+                        }
 
-                    response.setHeader("error", "Token has expired" + exception.getMessage()); //header에  문자열"error" 보낸다.
+                        else if (exception.getMessage().startsWith("The Token has expired")) {
+                            log.error("Error logging in: {}", exception.getMessage());
+                            response.setHeader("error", "Token Has Expired Do Re-Login");
+                        }
+
+                        else {
+                            log.error("Error logging in: {}", exception.getMessage());
+                            response.setHeader("error", "Unexpected Error... Do Re-Login");
+                        }
+
+                    }
+                    else {
+
+                        if (exception.getMessage().startsWith("The Token's Signature")) { //조작된 토큰 일때
+                            log.error("Error logging in: {}", exception.getMessage());
+                            response.setHeader("error", "Incorrect Token Do Re-Login");
+                        }
+
+                        else if (exception.getMessage().startsWith("The Token has expired")) {
+                            log.error("Error logging in: {}", exception.getMessage());
+                            response.setHeader("error", "Token Has Expired Do Refresh");
+                        }
+
+                        else {
+                            log.error("Error logging in: {}", exception.getMessage());
+                            response.setHeader("error", "Unexpected Error...");
+                        }
+
+                    }
 
                     response.setStatus(FORBIDDEN.value()); //forbidden error code로 보낸다.
 
@@ -73,7 +105,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     Map<String, String> error = new HashMap<>();
 
-                    error.put("error_message", "Token has expired"); //문자열과 함께 error메세지 저장
+                    error.put("error_message", "Token Error"); //문자열과 함께 error메세지 저장
 
                     response.setContentType(APPLICATION_JSON_VALUE);
 

@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @Log4j2
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor //생성자 주입
-@RequestMapping("/api")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
+@RequestMapping("/user")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
