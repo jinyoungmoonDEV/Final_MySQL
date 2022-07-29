@@ -93,7 +93,7 @@ public class UserController {
 
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String refresh_token = request.getHeader("refresh_token");
+        String refresh_token = request.getHeader(AUTHORIZATION);
         if(refresh_token != null && refresh_token.startsWith("Bearer ")) {
             try {
                 String past_token = refresh_token.substring("Bearer ".length());

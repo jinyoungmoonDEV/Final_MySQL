@@ -17,8 +17,6 @@ import java.util.Date;
 @Log4j2
 public class TokenProvider {
 
-    private final TokenRepository tokenRepository;
-
     public void createToken(UserDTO user, HttpServletResponse response) {
 
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes()); //token 생성 알고리즘

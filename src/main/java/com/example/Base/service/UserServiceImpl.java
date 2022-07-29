@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
 
     private final PasswordEncoder passwordEncoder;
 
-    private final TokenProvider tokenProvider;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { //DB에서 유저 정보를 불러오는 중요한 메소드
