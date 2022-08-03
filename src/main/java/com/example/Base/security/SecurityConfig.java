@@ -46,11 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//session사용 안하므로 STATELESS로 끄기
 
-        http.authorizeRequests().antMatchers("/user/login/**", "/user/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/user/user/**").hasAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET, "/user/users/**").hasAuthority("ROLE_ADMIN");
-        http.authorizeRequests().antMatchers(GET, "/user/helper/**").hasAuthority("ROLE_HELPER");
-        http.authorizeRequests().antMatchers(POST, "/user/user/save/**", "/user/helper/save/**").permitAll();
+        http.authorizeRequests().antMatchers("/user/signin/**", "/user/token/refresh/**", "/user/client/info/**").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/user/user/**", "/user/client/info/**").hasAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "/user/**", "/user/client/info/**").hasAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers(GET, "/user/gosu/**", "/user/client/info/**").hasAuthority("ROLE_GOSU");
+        http.authorizeRequests().antMatchers(POST, "/user/user/signup/**", "/user/gosu/signup/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated(); //나머지 리퀘스트들은 인증이 필요하다
 
 //        http.addFilter(customAuthenticationFilter); //아래 메서드 사용

@@ -7,6 +7,7 @@ import com.example.Base.repository.RoleRepository;
 import com.example.Base.repository.UserRepository;
 import com.example.Base.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor//종속성 주입
 @Transactional//모든 클래스가 트랜잭션 되야함 -> 모든 작업들이 성공적이여만 묶음 결과를 적용 -> 에러가 나면 모든 작업들이 다시 원 상태로 되돌릴수 있다.
-@Slf4j
+@Log4j2
 public class UserServiceImpl implements UserService, UserDetailsService { //UserDetailsService에서 loadUserByUsername메소드 Override
 
     private final UserRepository userRepository;
@@ -60,16 +61,26 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     }
 
     @Override
+    public UserEntity clientInfo(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        log.info(email);
+        UserDTO userDTO = UserDTO.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole())
+                .build();
+
+        return userDTO.toEntity();
+    }
+
+    @Override
     public UserEntity saveUser(final UserDTO user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getName());
 
         user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
         UserEntity userEntity = user.toEntity();
 
-        userRepository.save(userEntity);
-
-        //addRoleToUser(user.getEmail(), "ROLE_USER");
-        return userRepository.findByEmail(user.getEmail());
+        return userRepository.save(userEntity);
     }
 
     @Override
@@ -77,4 +88,6 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         log.info("Saving new role {} to the database", role.getName());
         return roleRepository.save(role);
     }
+
+
 }

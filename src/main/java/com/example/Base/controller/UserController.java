@@ -41,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUsers()); //ResponseEntity.ok() => 200 OK status 코드를 반환하는 빌더 메서드
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
@@ -57,7 +57,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/save")
+    @PostMapping("/user/signup")
     public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_USER");
@@ -74,12 +74,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/helper/save")
+    @PostMapping("/gosu/signup")
     public ResponseEntity saveHelper(@RequestBody UserDTO userDTO) {
         try {
-            userDTO.setRole("ROLE_HELPER");
+            userDTO.setRole("ROLE_GOSU");
 
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/helper/save").toUriString());// = localhost8080:/api/user/save
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/gosu/save").toUriString());// = localhost8080:/api/user/save
             return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
@@ -89,6 +89,12 @@ public class UserController {
                     .badRequest()
                     .body(responseDTO);
         }
+    }
+
+    @GetMapping("/client/info")
+    public ResponseEntity userinfo(@RequestBody Map<String, String> email){
+        String input = email.get("email");
+        return ResponseEntity.ok().body(userService.clientInfo(input));
     }
 
     @GetMapping("/token/refresh")
