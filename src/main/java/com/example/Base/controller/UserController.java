@@ -35,13 +35,8 @@ public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
 
-    @GetMapping("/users") //모든 유저 불러온다
-    //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
-    public ResponseEntity<List<UserEntity>>getUsers(){
-        return ResponseEntity.ok().body(userService.getUsers()); //ResponseEntity.ok() => 200 OK status 코드를 반환하는 빌더 메서드
-    }
-
     @PostMapping("/signin")
+    //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
@@ -57,7 +52,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_USER");
@@ -95,6 +90,34 @@ public class UserController {
     public ResponseEntity userinfo(@RequestBody Map<String, String> email){
         String input = email.get("email");
         return ResponseEntity.ok().body(userService.clientInfo(input));
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response){
+        String access_token = request.getHeader("Authorization");
+
+        String token = access_token.substring("Bearer ".length());
+
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String email = decodedJWT.getSubject();
+        String name = decodedJWT.getIssuer();
+
+        UserEntity user = userService.getUser(email);
+        String role = user.getRole();
+
+        response.setHeader("email", email);
+        response.setHeader("name", name);
+        response.setHeader("role", role);
+
+        return ResponseEntity.ok().body("User Info");
+    }
+
+    @PutMapping("/gosu/rating")
+    public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
+        return ResponseEntity.created(URI.create("/gosu/rating")).body(userService.gosuRating(userDTO));
     }
 
     @GetMapping("/token/refresh")

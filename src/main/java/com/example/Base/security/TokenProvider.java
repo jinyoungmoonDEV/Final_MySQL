@@ -2,9 +2,7 @@ package com.example.Base.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.Base.domain.dto.TokenDTO;
 import com.example.Base.domain.dto.UserDTO;
-import com.example.Base.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;

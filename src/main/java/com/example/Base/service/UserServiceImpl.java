@@ -59,20 +59,6 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         log.info("Fetching user {}", email);
         return userRepository.findByEmail(email);
     }
-
-    @Override
-    public UserEntity clientInfo(String email) {
-        UserEntity user = userRepository.findByEmail(email);
-        log.info(email);
-        UserDTO userDTO = UserDTO.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole())
-                .build();
-
-        return userDTO.toEntity();
-    }
-
     @Override
     public UserEntity saveUser(final UserDTO user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getName());
@@ -89,5 +75,33 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         return roleRepository.save(role);
     }
 
+   // token, Cookie , Yap
+
+    @Override
+    public UserEntity clientInfo(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        log.info(email);
+        UserDTO userDTO = UserDTO.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole())
+                .build();
+
+        return userDTO.toEntity();
+    }
+
+    @Override
+    public String gosuRating(UserDTO userDTO) {
+        String email = userDTO.getEmail();
+        UserEntity info = userRepository.findByEmail(email);
+        UserDTO update = info.toDTO();
+        update.setCount1(userDTO.getCount1());//별점계산이랑 다른 정수 카운트 메서드 실행 후 update 수정 필요
+        update.setCount2(userDTO.getCount2());
+        update.setCount3(userDTO.getCount3());
+
+        userRepository.save(update.toEntity());
+
+        return "Rating Success";
+    }
 
 }
