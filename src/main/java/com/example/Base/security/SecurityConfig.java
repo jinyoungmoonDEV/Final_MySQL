@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//session사용 안하므로 STATELESS로 끄기
 
-        http.authorizeRequests().antMatchers("/user/signin/**", "/user/token/refresh/**", "/user/client/info/**","/category/**").permitAll();
+        http.authorizeRequests().antMatchers("/user/signin/**", "/user/token/refresh/**", "/user/client/info/**", "/category/**", "/chat/**").permitAll();
         http.authorizeRequests().antMatchers(GET, "/user/users/**", "/user/client/info/**").hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "/user/**", "/user/client/info/**").hasAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/user/gosu/**", "/user/client/info/**").hasAuthority("ROLE_GOSU");
