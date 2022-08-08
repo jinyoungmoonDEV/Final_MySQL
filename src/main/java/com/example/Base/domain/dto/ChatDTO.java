@@ -12,5 +12,4 @@ public class ChatDTO {
     private String receiver;
     private Integer roomNum;
     private LocalDateTime createdAt;
-    //a
 }
