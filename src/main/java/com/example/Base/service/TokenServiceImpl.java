@@ -35,7 +35,7 @@ public class TokenServiceImpl implements TokenService{
             boolean verify = passwordEncoder.matches(userDTO.getPassword(), password);
 
             if(verify){
-                tokenProvider.createToken(userDTO, response);
+                tokenProvider.createToken(info.toDTO(), response);
             }
 
             else {

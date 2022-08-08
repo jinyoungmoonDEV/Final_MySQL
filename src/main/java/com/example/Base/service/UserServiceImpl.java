@@ -59,6 +59,14 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         log.info("Fetching user {}", email);
         return userRepository.findByEmail(email);
     }
+
+    @Override
+    public String getName(String email) {
+        UserEntity info = userRepository.findByEmail(email);
+        String name = info.getName();
+        return name;
+    }
+
     @Override
     public UserEntity saveUser(final UserDTO user) { //유저 정보 DB에 저장
         log.info("Saving new user {} to the database", user.getName());
@@ -74,6 +82,8 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         log.info("Saving new role {} to the database", role.getName());
         return roleRepository.save(role);
     }
+
+
 
    // token, Cookie , Yap
 

@@ -92,8 +92,16 @@ public class UserController {
         return ResponseEntity.ok().body(userService.clientInfo(input));
     }
 
+    @PutMapping("/gosu/rating")
+    public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
+        return ResponseEntity.created(URI.create("/gosu/rating")).body(userService.gosuRating(userDTO));
+    }
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------
+
     @GetMapping("/check")
-    public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response) {
+        log.info("in");
         String access_token = request.getHeader("Authorization");
 
         String token = access_token.substring("Bearer ".length());
@@ -113,11 +121,6 @@ public class UserController {
         response.setHeader("role", role);
 
         return ResponseEntity.ok().body("User Info");
-    }
-
-    @PutMapping("/gosu/rating")
-    public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
-        return ResponseEntity.created(URI.create("/gosu/rating")).body(userService.gosuRating(userDTO));
     }
 
     @GetMapping("/token/refresh")
