@@ -1,6 +1,7 @@
 package com.example.Base.controller;
 
 import com.example.Base.domain.dto.ChatDTO;
+import com.example.Base.domain.dto.UserDTO;
 import com.example.Base.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @Log4j2
@@ -27,7 +30,6 @@ public class ChatController {
 
     @PostMapping("/insert")
     public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
-        log.info("in!");
         return webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)
@@ -35,17 +37,19 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @GetMapping("/sender/room/{room}")
+    @GetMapping(value = "/sender/room/{room}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ChatDTO> getMsg(@PathVariable Integer room){
-        log.info("in!");
+        log.info(room);
         return webClient.get()
                 .uri("/chat/sender/room/"+ room)
+
                 .retrieve()
                 .bodyToFlux(ChatDTO.class);
     }
 
     @PostMapping("/room")
-    public Mono<String> chatInfo(@RequestBody String email){
+    public Mono<String> chatInfo(@RequestBody UserDTO userDTO){
+        String email = userDTO.getEmail();
         String name = userService.getName(email);
         return webClient.get()
                 .uri("/chat/room/"+name)

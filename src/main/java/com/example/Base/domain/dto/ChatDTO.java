@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 public class ChatDTO {
     private String id;
     private String msg;
-    private String sender;
-    private String receiver;
-    private Integer roomNum;
+    private String user;
+    private String gosu;
+    private Integer room;
     private LocalDateTime createdAt;
 }

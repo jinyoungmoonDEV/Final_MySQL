@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -40,6 +41,15 @@ public class UserController {
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
+
+            Cookie cookie = new Cookie("Cookie","Choco");
+
+            cookie.setMaxAge(7*24*60*60);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
 
             return ResponseEntity.ok().body("로그인 성공!");
 
