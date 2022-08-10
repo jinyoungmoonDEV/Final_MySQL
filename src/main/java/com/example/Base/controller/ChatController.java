@@ -47,12 +47,15 @@ public class ChatController {
                 .bodyToFlux(ChatDTO.class);
     }
 
-    @PostMapping("/room")
-    public Mono<String> chatInfo(@RequestBody UserDTO userDTO){
-        String email = userDTO.getEmail();
-        String name = userService.getName(email);
+    @GetMapping("/room")
+    public Mono<String> chatInfo(@RequestBody ChatDTO chatDTO){
+        String user = chatDTO.getUser();
+        String gosu = chatDTO.getGosu();
+        String user_name = userService.getName(user);
+        String gosu_name = userService.getName(gosu);
+        log.info(user_name);
         return webClient.get()
-                .uri("/chat/room/"+name)
+                .uri("/chat/room/"+user_name+"/"+gosu_name)
                 .retrieve()
                 .bodyToMono(String.class);
     }

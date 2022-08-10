@@ -63,9 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     @Override
     public String getName(String email) {
         UserEntity info = userRepository.findByEmail(email);
-        log.info(email);
         String name = info.getName();
-        log.info(name);
         return name;
     }
 
