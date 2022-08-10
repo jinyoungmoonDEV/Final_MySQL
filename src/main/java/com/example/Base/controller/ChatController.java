@@ -24,12 +24,25 @@ public class ChatController {
     private final UserServiceImpl userService;
 
     WebClient webClient = WebClient.builder()
-            .baseUrl("http://localhost:8082")
+            .baseUrl("http://13.209.216.147:8020")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
+    @PostMapping("/new")
+    public Mono<ChatDTO> createRoom(@RequestBody ChatDTO chatDTO){
+        return webClient.post()
+                .uri("/chat/new")
+                .bodyValue(chatDTO)
+                .retrieve()
+                .bodyToMono(ChatDTO.class);
+    }
+
     @PostMapping("/insert")
     public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
+
+        log.info(chatDTO.getMsg());
+        log.info(chatDTO.getGosu());
+        log.info(chatDTO.getUser());
         return webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)

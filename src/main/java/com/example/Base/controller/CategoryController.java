@@ -17,7 +17,7 @@ import java.util.List;
 @Log4j2
 public class CategoryController {
     WebClient webClient = WebClient.builder()
-            .baseUrl("http://localhost:8081")
+            .baseUrl("http://13.209.216.147:8010")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
