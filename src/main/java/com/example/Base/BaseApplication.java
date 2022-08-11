@@ -31,7 +31,7 @@ public class BaseApplication {
 			userService.saveRole(new RoleEntity(null, "ROLE_ADMIN"));
 
 			userService.saveUser(new UserDTO(null , "user","user@gmail.com","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
-			userService.saveUser(new UserDTO(null , "helper","helper@gmail.com","1234","a","b","c","d","e",1.1,2,3,"ROLE_HELPER"));
+			userService.saveUser(new UserDTO(null , "gosu","gosu@gmail.com","1234","a","b","c","d","e",1.1,2,3,"ROLE_HELPER"));
 			userService.saveUser(new UserDTO(null , "admin","admin@gmail.com","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
 
 		};
