@@ -17,6 +17,8 @@ import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -88,11 +90,18 @@ public class ChatController {
     }
 
     @GetMapping(value = "/sender/room/{room}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ChatDTO> getMsg(@PathVariable Integer room){
-        return webClient.get()
-                .uri("/chat/sender/room/"+ room)
-                .retrieve()
-                .bodyToFlux(ChatDTO.class);
+    public ResponseEntity<Flux<ChatDTO>> getMsg(@PathVariable Integer room){
+
+
+
+
+        Flux<ChatDTO> a = webClient.get()
+                            .uri("/chat/sender/room/"+ room)
+                            .retrieve()
+                            .bodyToFlux(ChatDTO.class);
+
+
+        return ResponseEntity.ok().body(a);
     }
 
     @GetMapping(value = "/list")
