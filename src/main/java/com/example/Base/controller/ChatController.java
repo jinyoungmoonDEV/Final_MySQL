@@ -66,19 +66,10 @@ public class ChatController {
         String user = chatDTO.getUser();
         String gosu = chatDTO.getGosu();
 
-        try {
-            String userName = userService.getName(user);
-            chatDTO.setUser(userName);
-        }
-        catch (Exception e){
-            String gosuName = userService.getName(gosu);
-            chatDTO.setGosu(gosuName);
-        }
-
         ChatDTO input = ChatDTO.builder()
                 .msg(chatDTO.getMsg())
-                .user(chatDTO.getUser())
-                .gosu(chatDTO.getGosu())
+                .user(user)
+                .gosu(gosu)
                 .room(chatDTO.getRoom())
                 .createdAt(chatDTO.getCreatedAt())
                 .build();
@@ -89,23 +80,16 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @GetMapping(value = "/sender/room/{room}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<Flux<ChatDTO>> getMsg(@PathVariable Integer room){
-
-
-
-
-        Flux<ChatDTO> a = webClient.get()
-                            .uri("/chat/sender/room/"+ room)
-                            .retrieve()
-                            .bodyToFlux(ChatDTO.class);
-
-
-        return ResponseEntity.ok().body(a);
+    @GetMapping(value = "/sender/room/{room}")
+    public Flux<ChatDTO> getMsg(@PathVariable Integer room){
+        return webClient.get()
+                .uri("/chat/sender/room/"+ room)
+                .retrieve()
+                .bodyToFlux(ChatDTO.class);
     }
 
-    @GetMapping(value = "/list")
-    public Flux<ChatDTO> getList(@RequestBody String email, @RequestBody String role){
+    @GetMapping(value = "/list/{email}/{role}")
+    public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
         return webClient.get()
                 .uri("/chat/list/"+name+"/"+role)

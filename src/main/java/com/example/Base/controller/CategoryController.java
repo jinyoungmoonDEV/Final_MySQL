@@ -35,6 +35,7 @@ public class CategoryController {
                 .uri( "/category/"+categoryId)
                 .retrieve()
                 .bodyToMono(List.class);
+
     }
 
     @GetMapping("/{categoryId}/survey/{indexNum}")
