@@ -81,20 +81,20 @@ public class ChatController {
     }
 
     @GetMapping(value = "/sender/room/{room}")
-    public Flux<ChatDTO> getMsg(@PathVariable Integer room){
+    public Mono<ChatDTO> getMsg(@PathVariable Integer room){
         return webClient.get()
                 .uri("/chat/sender/room/"+ room)
                 .retrieve()
-                .bodyToFlux(ChatDTO.class);
+                .bodyToMono(ChatDTO.class);
     }
 
     @GetMapping(value = "/list/{email}/{role}")
-    public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
+    public Mono<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
         return webClient.get()
                 .uri("/chat/list/"+name+"/"+role)
                 .retrieve()
-                .bodyToFlux(ChatDTO.class);
+                .bodyToMono(ChatDTO.class);
     }
 
 //    @GetMapping("/room")
