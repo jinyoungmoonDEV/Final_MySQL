@@ -1,5 +1,5 @@
 server:
-  port: 8000
+  port: 8001
 
 spring:
   datasource:
@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     properties:
       hibernate:

@@ -1,4 +1,4 @@
-package com.example.Base.domain.dto;
+package com.example.Base.domain.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RoleDTO {
     private Long id;
+
     private String name;
 }

@@ -1,13 +1,10 @@
 package com.example.Base.domain.entity;
 
-import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.dto.user.UserDTO;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Getter
@@ -26,6 +23,7 @@ public class UserEntity {
     @Column(unique = true)
     private String email;
 
+    private String category;
     private String password;
 
     private String gender;
@@ -52,6 +50,7 @@ public class UserEntity {
                 .password(password)
                 .email(email)
                 .gender(gender)
+                .address(address)
                 .category1(category1)
                 .category2(category2)
                 .category3(category3)

@@ -1,14 +1,12 @@
-package com.example.Base.service;
+package com.example.Base.service.user;
 
-import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.RoleRepository;
 import com.example.Base.repository.UserRepository;
-import com.example.Base.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -83,8 +81,6 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         return roleRepository.save(role);
     }
 
-
-
    // token, Cookie , Yap
 
     @Override
@@ -114,4 +110,10 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
         return "Rating Success";
     }
 
+    @Override
+    public String getCategory(String email) {
+        UserEntity info = userRepository.findByEmail(email);
+        String category = info.getCategory();
+        return category;
+    }
 }

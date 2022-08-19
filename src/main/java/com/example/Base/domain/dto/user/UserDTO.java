@@ -1,4 +1,4 @@
-package com.example.Base.domain.dto;
+package com.example.Base.domain.dto.user;
 
 import com.example.Base.domain.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -18,6 +18,8 @@ public class UserDTO {
     private String name;
 
     private String email;
+
+    private String category;
 
     private String password;
 
@@ -42,10 +44,12 @@ public class UserDTO {
 
     public UserEntity toEntity() {
         UserEntity userEntity = UserEntity.builder()
+                .id(id)
                 .email(email)
                 .name(name)
                 .password(password)
                 .gender(gender)
+                .address(address)
                 .category1(category1)
                 .category2(category2)
                 .category3(category3)

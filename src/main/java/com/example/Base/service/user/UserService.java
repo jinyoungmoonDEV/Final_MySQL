@@ -1,6 +1,6 @@
-package com.example.Base.service;
+package com.example.Base.service.user;
 
-import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.domain.entity.UserEntity;
 
@@ -14,4 +14,5 @@ public interface UserService {
     String getName(String email);
     UserEntity clientInfo(String email);
     String gosuRating(UserDTO userDTO);
+    String getCategory(String email);
 }

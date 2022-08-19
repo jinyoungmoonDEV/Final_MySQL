@@ -1,8 +1,8 @@
 package com.example.Base.controller;
 
-import com.example.Base.domain.dto.ChatDTO;
-import com.example.Base.domain.dto.UserDTO;
-import com.example.Base.service.UserServiceImpl;
+import com.example.Base.SSE.NotificationService;
+import com.example.Base.domain.dto.chat.ChatDTO;
+import com.example.Base.service.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 import reactor.netty.http.client.HttpClient;
 
+import java.net.URI;
+import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @Log4j2
@@ -28,6 +26,8 @@ import java.util.Map;
 public class ChatController {
 
     private final UserServiceImpl userService;
+
+    private final NotificationService notificationService;
 
     HttpClient client = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(1));
@@ -42,17 +42,15 @@ public class ChatController {
     public Mono<ChatDTO> createRoom(@RequestBody ChatDTO chatDTO){
         String user = chatDTO.getUser();
         String gosu = chatDTO.getGosu();
-        log.info(user);
 
         String userName = userService.getName(user);
-        log.info(userName);
         String gosuName = userService.getName(gosu);
-        log.info("gosu");
+
         ChatDTO input = ChatDTO.builder()
                 .user(userName)
                 .gosu(gosuName)
+                .info(chatDTO.getInfo())
                 .build();
-        log.info(input);
 
         return webClient.post()
                 .uri("/chat/new")
@@ -62,51 +60,42 @@ public class ChatController {
     }
 
     @PostMapping("/insert")
-    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
-        String user = chatDTO.getUser();
-        String gosu = chatDTO.getGosu();
-
-        ChatDTO input = ChatDTO.builder()
-                .msg(chatDTO.getMsg())
-                .user(user)
-                .gosu(gosu)
-                .room(chatDTO.getRoom())
-                .createdAt(chatDTO.getCreatedAt())
-                .build();
-        return webClient.post()
+    public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
+        Mono<ChatDTO> a =  webClient.post()
                 .uri("/chat/insert")
-                .bodyValue(input)
+                .bodyValue(chatDTO)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
+        String user = chatDTO.getInfo().get(0).getUser();
+        String gosu = chatDTO.getInfo().get(0).getGosu();
+
+        if(!user.isEmpty()){
+            log.info("insert by user");
+            notificationService.send(gosu, chatDTO.getUser() + "님의 새로운 채팅!");
+        }
+        else if(!gosu.isEmpty()){
+            log.info("insert by gosu");
+            notificationService.send(user,chatDTO.getGosu() + "님의 새로운 채팅!");
+        }
+        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted");
     }
 
     @GetMapping(value = "/sender/room/{room}")
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){
         return webClient.get()
                 .uri("/chat/sender/room/"+ room)
+                .acceptCharset(Charset.forName("UTF-8"))
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
     }
 
     @GetMapping(value = "/list/{email}/{role}")
-    public Mono<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
+    public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
         return webClient.get()
                 .uri("/chat/list/"+name+"/"+role)
+                .acceptCharset(Charset.forName("UTF-8"))
                 .retrieve()
-                .bodyToMono(ChatDTO.class);
+                .bodyToFlux(ChatDTO.class);
     }
-
-//    @GetMapping("/room")
-//    public Mono<String> chatInfo(@RequestBody ChatDTO chatDTO){
-//        String user = chatDTO.getUser();
-//        String gosu = chatDTO.getGosu();
-//        String user_name = userService.getName(user);
-//        String gosu_name = userService.getName(gosu);
-//        log.info(user_name);
-//        return webClient.get()
-//                .uri("/chat/room/"+user_name+"/"+gosu_name)
-//                .retrieve()
-//                .bodyToMono(String.class);
-//    }
 }

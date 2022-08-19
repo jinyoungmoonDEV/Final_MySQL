@@ -1,4 +1,4 @@
-package com.example.Base.service;
+package com.example.Base.service.board;
 
 import com.example.Base.domain.dto.BoardDTO;
 import com.example.Base.domain.entity.BoardEntity;

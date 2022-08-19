@@ -4,16 +4,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.entity.UserEntity;
-import com.example.Base.domain.dto.ResponseDTO;
-import com.example.Base.domain.dto.UserDTO;
-import com.example.Base.service.TokenServiceImpl;
-import com.example.Base.service.UserService;
+import com.example.Base.domain.dto.error.ResponseDTO;
+import com.example.Base.domain.dto.user.UserDTO;
+import com.example.Base.service.token.TokenServiceImpl;
+import com.example.Base.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,6 +28,7 @@ import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Log4j2
 @RestController // @Controller + @ResponseBody
@@ -35,6 +37,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
+
+    private final NotificationService notificationService;
 
     @PostMapping("/signin")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
@@ -50,6 +54,9 @@ public class UserController {
             cookie.setPath("/");
 
             response.addCookie(cookie);
+
+            notificationService.subscribe(userDTO.getEmail(),"gosu@gmail.com");
+            log.info("subscribed");
 
             return ResponseEntity.ok().body("로그인 성공!");
 
@@ -67,7 +74,7 @@ public class UserController {
         try {
             userDTO.setRole("ROLE_USER");
 
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());// = localhost8080:/api/user/save
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/user/signup").toUriString());// = localhost8080:/api/user/save
             return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
@@ -84,7 +91,7 @@ public class UserController {
         try {
             userDTO.setRole("ROLE_GOSU");
 
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/gosu/save").toUriString());// = localhost8080:/api/user/save
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/gosu/signup").toUriString());// = localhost8080:/api/user/save
             return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
@@ -109,7 +116,7 @@ public class UserController {
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    @GetMapping("/check")
+    @GetMapping(value = "/check")
     public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response) {
         log.info("in");
         String access_token = request.getHeader("Authorization");
@@ -130,7 +137,10 @@ public class UserController {
         response.setHeader("name", name);
         response.setHeader("role", role);
 
-        return ResponseEntity.ok().body("User Info");
+        response.setContentType("text/html; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
+
+        return ResponseEntity.ok().body(user);
     }
 
     @GetMapping("/token/refresh")
@@ -155,12 +165,31 @@ public class UserController {
                 new ObjectMapper().writeValue(response.getOutputStream(), message); //토큰 전송
 
             }catch (Exception exception) {
-                response.setHeader("error", "Refresh_Token has expired");
-                response.setStatus(FORBIDDEN.value());
+
+                if (exception.getMessage().startsWith("The Token's Signature")) { //조작된 토큰 일때
+                    log.error("Error logging in: {}", exception.getMessage());
+                    response.setHeader("error", "Incorrect Token Do Re-Login");
+                }
+
+                else if (exception.getMessage().startsWith("The Token has expired")) {
+                    log.error("Error logging in: {}", exception.getMessage());
+                    response.setHeader("error", "Token Has Expired Do Refresh");
+                }
+
+                else {
+                    log.error("Error logging in: {}", exception.getMessage());
+                    response.setHeader("error", "Unexpected Error...");
+                }
+
+                response.setStatus(FORBIDDEN.value()); //forbidden error code로 보낸다.
+
+                //response.sendError(FORBIDDEN.value());
 
                 Map<String, String> error = new HashMap<>();
+
                 error.put("error_message", "Make User Re-Login");
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+                response.setContentType(APPLICATION_JSON_VALUE);
 
                 new ObjectMapper().writeValue(response.getOutputStream(), error);
             }

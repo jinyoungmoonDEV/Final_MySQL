@@ -1,6 +1,6 @@
-package com.example.Base.service;
+package com.example.Base.service.token;
 
-import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.UserRepository;
 import com.example.Base.security.TokenProvider;

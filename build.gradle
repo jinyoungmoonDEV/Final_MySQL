@@ -28,6 +28,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'io.projectreactor:reactor-core:3.4.18'
 
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	implementation 'org.json:json:20171018'
+
 	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.1'
 
 	compileOnly 'org.projectlombok:lombok'

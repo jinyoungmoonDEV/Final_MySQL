@@ -1,7 +1,7 @@
 package com.example.Base.controller;
 
 import com.example.Base.domain.dto.BoardDTO;
-import com.example.Base.service.BoardServiceImpl;
+import com.example.Base.service.board.BoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

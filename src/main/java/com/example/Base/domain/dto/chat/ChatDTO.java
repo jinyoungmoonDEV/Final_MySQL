@@ -1,11 +1,11 @@
-package com.example.Base.domain.dto;
+package com.example.Base.domain.dto.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,9 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 public class ChatDTO {
     private String id;
-    private String msg;
     private String user;
     private String gosu;
     private Integer room;
-    private String createdAt;
+    private List<Info> info;
 }

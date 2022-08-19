@@ -2,7 +2,7 @@ package com.example.Base.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.example.Base.domain.dto.UserDTO;
+import com.example.Base.domain.dto.user.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class TokenProvider {
 
         String refresh_token = JWT.create() //refresh token 생성
                 .withSubject(user.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 *1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 3000 * 60 *1000))
                 .withIssuer(user.getEmail())
                 .sign(algorithm);
 
