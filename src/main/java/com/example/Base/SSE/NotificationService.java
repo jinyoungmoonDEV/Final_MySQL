@@ -69,6 +69,8 @@ public class NotificationService {
 //    서버에서 클라이언트로 일방적인 데이터 보내기
 
     public void send(String receiver, String content) {
+        log.info("send");
+        log.info(content);
         Notification notification = createNotification(receiver, content);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
@@ -93,6 +95,7 @@ public class NotificationService {
     }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
+        log.info("send to client");
         try {
             emitter.send(SseEmitter.event()
                     .id(id)

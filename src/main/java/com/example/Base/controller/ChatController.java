@@ -77,7 +77,7 @@ public class ChatController {
             log.info("insert by gosu");
             notificationService.send(user,chatDTO.getGosu() + "님의 새로운 채팅!");
         }
-        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted");
+        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted" + a);
     }
 
     @GetMapping(value = "/sender/room/{room}")
