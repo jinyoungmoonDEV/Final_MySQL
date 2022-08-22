@@ -1,5 +1,6 @@
 package com.example.Base.SSE;
 
+import com.example.Base.SSE.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Log4j2
 public class NotificationService {
-    private final NotificationRepositoryImpl emitterRepository;
+    private final EmitterRepositoryImpl emitterRepository;
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     public SseEmitter subscribe(String email, String lastEventId) {
@@ -68,10 +69,10 @@ public class NotificationService {
 /*-----------------------------------------------------------------------------------------------------------------------------------*/
 //    서버에서 클라이언트로 일방적인 데이터 보내기
 
-    public void send(String receiver, String content) {
+    public void send(String receiver, String content, Enum type, Integer chatRoom) {
         log.info("send");
         log.info(content);
-        Notification notification = createNotification(receiver, content);
+        Notification notification = createNotification(receiver, content, type, chatRoom);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
@@ -85,13 +86,23 @@ public class NotificationService {
         );
     }
 
-    private Notification createNotification(String receiver, String content) {
-        return Notification.builder()
-                .receiver(receiver)
-                .content(content)
-//                .url("/reviews/" + review.getId())
-                .isRead(false)
-                .build();
+    private Notification createNotification(String receiver, String content, Enum type, Integer chatRoom) {
+        if (type == NotificationType.CHAT_INSERTED){
+            return Notification.builder()
+                    .receiver(receiver)
+                    .content(content)
+                    .url("/chat/sender/room/" + chatRoom)
+                    .isRead(false)
+                    .build();
+        }
+        else {
+            return Notification.builder()
+                    .receiver(receiver)
+                    .content(content)
+                    .url("/???")
+                    .isRead(false)
+                    .build();
+        }
     }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {

@@ -1,5 +1,9 @@
 package com.example.Base.service.token;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.UserRepository;
@@ -10,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 @Service
@@ -47,5 +52,23 @@ public class TokenServiceImpl implements TokenService{
     @Override
     public void refreshToken(UserDTO user, HttpServletResponse response) {
         tokenProvider.createToken(user, response);
+    }
+
+    @Override
+    public UserDTO decodeJWT(HttpServletRequest request) {
+        String access_token = request.getHeader("Authorization");
+
+        String token = access_token.substring("Bearer ".length());
+
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String email = decodedJWT.getSubject();
+
+        UserDTO userDTO = UserDTO.builder()
+                .email(email)
+                .build();
+        return userDTO;
     }
 }

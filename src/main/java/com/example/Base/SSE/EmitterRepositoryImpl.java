@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Repository
 @NoArgsConstructor
 @Log4j2
-public class NotificationRepositoryImpl implements NotificationRepository {
+public class EmitterRepositoryImpl implements EmitterRepository {
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String, Object> eventCache = new ConcurrentHashMap<>();

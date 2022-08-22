@@ -3,6 +3,7 @@ package com.example.Base.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.entity.UserEntity;
@@ -39,9 +40,18 @@ public class UserController {
     private final TokenServiceImpl tokenService;
     private final NotificationService notificationService;
 
-    @PostMapping(value = "/signin", produces = "text/event-stream")
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    public ResponseEntity subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, HttpServletRequest request){
+
+        UserDTO userDTO = tokenService.decodeJWT(request);
+        String email = userDTO.getEmail();
+
+        return ResponseEntity.ok().body(notificationService.subscribe(email,lastEventId));
+    }
+
+    @PostMapping(value = "/signin")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
-    public ResponseEntity login(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, @RequestBody  UserDTO userDTO, HttpServletResponse response){
+    public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
 
@@ -54,10 +64,7 @@ public class UserController {
 
             response.addCookie(cookie);
 
-            notificationService.subscribe(userDTO.getEmail(),lastEventId);
-            log.info("subscribed");
-
-            return ResponseEntity.ok().body("로그인 성공!");
+            return ResponseEntity.ok().body(userDTO);
 
         } catch (Exception e) {
             log.info("error");
@@ -116,30 +123,27 @@ public class UserController {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @GetMapping(value = "/check")
-    public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response) {
-        log.info("in");
-        String access_token = request.getHeader("Authorization");
-
-        String token = access_token.substring("Bearer ".length());
-
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        JWTVerifier verifier = JWT.require(algorithm).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-
-        String email = decodedJWT.getSubject();
-        String name = decodedJWT.getIssuer();
-
-        UserEntity user = userService.getUser(email);
-        String role = user.getRole();
-
-        response.setHeader("email", email);
-        response.setHeader("name", name);
-        response.setHeader("role", role);
-
-        response.setContentType("text/html; charset=utf-8");
-        response.setCharacterEncoding("utf-8");
-
-        return ResponseEntity.ok().body(user);
+    public ResponseEntity checkUser(/*HttpServletRequest request, HttpServletResponse response*/) {
+//        log.info("in");
+//        String access_token = request.getHeader("Authorization");
+//
+//        String token = access_token.substring("Bearer ".length());
+//
+//        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+//        JWTVerifier verifier = JWT.require(algorithm).build();
+//        DecodedJWT decodedJWT = verifier.verify(token);
+//
+//        String email = decodedJWT.getSubject();
+//        String name = decodedJWT.getIssuer();
+//        String role = decodedJWT.getClaim("role").toString();
+//
+//        response.setHeader("email", email);
+//        response.setHeader("name", name);
+//        response.setHeader("role", role);
+//
+//        response.setContentType("text/html; charset=utf-8");
+//        response.setCharacterEncoding("utf-8");
+        return ResponseEntity.ok().body("Checked");
     }
 
     @GetMapping("/token/refresh")
