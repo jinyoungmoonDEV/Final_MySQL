@@ -15,9 +15,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.HTTP;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
@@ -34,6 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Log4j2
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor //생성자 주입
+@CrossOrigin("*")
 @RequestMapping("/user")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
@@ -41,12 +45,12 @@ public class UserController {
     private final NotificationService notificationService;
 
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public ResponseEntity subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, HttpServletRequest request){
+    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId/*, HttpServletRequest request*/){
 
-        UserDTO userDTO = tokenService.decodeJWT(request);
-        String email = userDTO.getEmail();
+//        UserDTO userDTO = tokenService.decodeJWT(request);
+//        String email = userDTO.getEmail();
 
-        return ResponseEntity.ok().body(notificationService.subscribe(email,lastEventId));
+        return notificationService.subscribe("user@gmail.com",lastEventId);
     }
 
     @PostMapping(value = "/signin")
@@ -123,27 +127,24 @@ public class UserController {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @GetMapping(value = "/check")
-    public ResponseEntity checkUser(/*HttpServletRequest request, HttpServletResponse response*/) {
-//        log.info("in");
-//        String access_token = request.getHeader("Authorization");
-//
-//        String token = access_token.substring("Bearer ".length());
-//
-//        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-//        JWTVerifier verifier = JWT.require(algorithm).build();
-//        DecodedJWT decodedJWT = verifier.verify(token);
-//
-//        String email = decodedJWT.getSubject();
-//        String name = decodedJWT.getIssuer();
-//        String role = decodedJWT.getClaim("role").toString();
-//
-//        response.setHeader("email", email);
-//        response.setHeader("name", name);
-//        response.setHeader("role", role);
-//
-//        response.setContentType("text/html; charset=utf-8");
-//        response.setCharacterEncoding("utf-8");
-        return ResponseEntity.ok().body("Checked");
+    public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response) {
+        String access_token = request.getHeader("Authorization");
+
+        String token = access_token.substring("Bearer ".length());
+
+        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String email = decodedJWT.getSubject();
+        String name = decodedJWT.getIssuer();
+        String role = decodedJWT.getClaim("role").toString();
+
+        UserDTO result = UserDTO.builder()
+                .email(email)
+                .name(name)
+                .role(role).build();
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/token/refresh")

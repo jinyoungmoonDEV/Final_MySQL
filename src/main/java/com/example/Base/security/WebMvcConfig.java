@@ -1,5 +1,6 @@
 package com.example.Base.security;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,8 +12,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-						.allowedOrigins("http://3.39.23.182:3000")
-				 		.allowedOrigins("http://3.39.23.182:3002")
+						.allowedOrigins("http://13.209.67.178:3000")
+				 		.allowedOrigins("http://13.209.67.178:3002")
 						.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 						.allowedHeaders("*")
 						.allowCredentials(true)
