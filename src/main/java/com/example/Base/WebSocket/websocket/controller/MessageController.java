@@ -15,7 +15,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class MessageController {
 
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @MessageMapping("/message")
     @SendTo("/topic/messages")
