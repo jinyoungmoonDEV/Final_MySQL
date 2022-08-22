@@ -18,6 +18,7 @@ import reactor.netty.http.client.HttpClient;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.List;
 
 @RestController
 @Log4j2
@@ -61,23 +62,31 @@ public class ChatController {
 
     @PostMapping("/insert")
     public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
-        Mono<ChatDTO> a =  webClient.post()
+        Mono<ChatDTO> result =  webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
-        String user = chatDTO.getInfo().get(0).getUser();
-        String gosu = chatDTO.getInfo().get(0).getGosu();
 
-        if(!user.isEmpty()){
-            log.info("insert by user");
-            notificationService.send(gosu, chatDTO.getUser() + "님의 새로운 채팅!");
-        }
-        else if(!gosu.isEmpty()){
+        ChatDTO a = result.share().block();
+
+        //a 리턴에서 유저 이름만 뺴오기
+        if (chatDTO.getInfo().get(0).getUser().isEmpty()){
+            String sender =chatDTO.getInfo().get(0).getGosu();
+            String user = a.getUser();
             log.info("insert by gosu");
-            notificationService.send(user,chatDTO.getGosu() + "님의 새로운 채팅!");
+            log.info(user);
+            notificationService.send(user, sender + "님의 새로운 채팅!");
         }
-        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted" + a);
+        else {
+            String sender =chatDTO.getInfo().get(0).getUser();
+            String gosu = a.getGosu();
+            log.info("insert by user");
+            log.info(gosu);
+            notificationService.send(gosu, sender + "님의 새로운 채팅!");
+        }
+
+        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted");
     }
 
     @GetMapping(value = "/sender/room/{room}")

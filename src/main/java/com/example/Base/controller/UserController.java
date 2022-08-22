@@ -37,12 +37,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
-
     private final NotificationService notificationService;
 
-    @PostMapping("/signin")
+    @PostMapping(value = "/signin", produces = "text/event-stream")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
-    public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
+    public ResponseEntity login(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, @RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
 
@@ -55,7 +54,7 @@ public class UserController {
 
             response.addCookie(cookie);
 
-            notificationService.subscribe(userDTO.getEmail(),"gosu@gmail.com");
+            notificationService.subscribe(userDTO.getEmail(),lastEventId);
             log.info("subscribed");
 
             return ResponseEntity.ok().body("로그인 성공!");
