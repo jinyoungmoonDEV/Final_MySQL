@@ -1,4 +1,4 @@
-package com.example.Base.SSE;
+package com.example.Base.WebSocket.websocket.controller.SSE;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 

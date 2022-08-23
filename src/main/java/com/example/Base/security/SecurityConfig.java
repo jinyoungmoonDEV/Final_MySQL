@@ -1,5 +1,6 @@
 package com.example.Base.security;
 
+import com.example.Base.config.WebMvcConfig;
 import com.example.Base.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

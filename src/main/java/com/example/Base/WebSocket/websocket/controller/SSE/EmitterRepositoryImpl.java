@@ -1,4 +1,4 @@
-package com.example.Base.SSE;
+package com.example.Base.WebSocket.websocket.controller.SSE;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;

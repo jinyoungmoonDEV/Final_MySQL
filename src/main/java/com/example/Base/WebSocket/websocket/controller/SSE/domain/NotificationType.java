@@ -1,4 +1,4 @@
-package com.example.Base.SSE.domain;
+package com.example.Base.WebSocket.websocket.controller.SSE.domain;
 
 import lombok.*;
 

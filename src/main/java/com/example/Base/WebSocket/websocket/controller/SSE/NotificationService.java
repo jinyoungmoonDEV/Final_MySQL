@@ -1,13 +1,15 @@
-package com.example.Base.SSE;
+package com.example.Base.WebSocket.websocket.controller.SSE;
 
-import com.example.Base.SSE.domain.Notification;
-import com.example.Base.SSE.domain.NotificationType;
+import com.example.Base.WebSocket.websocket.controller.SSE.domain.Notification;
+import com.example.Base.WebSocket.websocket.controller.SSE.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Service
@@ -33,6 +35,17 @@ public class NotificationService {
         log.info("sending dummy");
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + email + "]");
         send("user@gmail.com", "test1", NotificationType.CHAT_INSERTED, 1);
+
+        try {
+            emitter.send(SseEmitter.event()
+//                    .id("aaa")
+//                    .name("sse")
+                    .data(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss"))));
+        } catch (IOException exception) {
+            emitterRepository.deleteById("user@gmail.com");
+            throw new RuntimeException("연결 오류!");
+        }
+
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {

@@ -3,6 +3,7 @@ package com.example.Base.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -15,9 +16,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-public class Controller {
+public class TestController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Controller.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @PostConstruct
@@ -32,7 +33,7 @@ public class Controller {
         }));
     }
 
-    @GetMapping("/time")
+    @GetMapping(value = "/time")
     public SseEmitter streamDateTime() {
 
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);

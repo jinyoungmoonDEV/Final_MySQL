@@ -1,9 +1,7 @@
-package com.example.Base.SSE.domain;
+package com.example.Base.WebSocket.websocket.controller.SSE.domain;
 
 
-import com.example.Base.SSE.domain.NotificationType;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 

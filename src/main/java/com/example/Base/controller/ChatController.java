@@ -1,7 +1,7 @@
 package com.example.Base.controller;
 
-import com.example.Base.SSE.NotificationService;
-import com.example.Base.SSE.domain.NotificationType;
+import com.example.Base.WebSocket.websocket.controller.SSE.NotificationService;
+import com.example.Base.WebSocket.websocket.controller.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.chat.ChatDTO;
 import com.example.Base.service.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,6 @@ import reactor.netty.http.client.HttpClient;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.Duration;
-import java.util.List;
 
 @RestController
 @Log4j2
