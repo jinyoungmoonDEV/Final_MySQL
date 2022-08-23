@@ -11,7 +11,13 @@ public class SurveyDto {
     private String email;
     private String category;
     private String gender;
-    private String age;
-    private String career;
+    private Long age;
+    private Long career;
     private String region;
+    /*--------------------------*/
+    private String GosuName;
+    private String GosuAge;
+    private String GosuGender;
+    private String GosuCategory;
+    private String GosuRegion;
 }

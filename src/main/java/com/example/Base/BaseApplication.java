@@ -28,11 +28,11 @@ public class BaseApplication {
 //			userService.saveRole(new RoleEntity(null, "ROLE_GOSU"));
 //			userService.saveRole(new RoleEntity(null, "ROLE_ADMIN"));
 //
-//			userService.saveUser(new UserDTO(null , "user","user@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
-//			userService.saveUser(new UserDTO(null , "user2","user2@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
-//			userService.saveUser(new UserDTO(null , "user3","user3@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
-//			userService.saveUser(new UserDTO(null , "gosu","gosu@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
-//			userService.saveUser(new UserDTO(null , "admin","admin@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
+//			userService.saveUser(new UserDTO(null , "user", 1,1,"user@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
+//			userService.saveUser(new UserDTO(null , "user2",2,2,"user2@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
+//			userService.saveUser(new UserDTO(null , "user3",3,3,"user3@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
+//			userService.saveUser(new UserDTO(null , "gosu",4,4,"gosu@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
+//			userService.saveUser(new UserDTO(null , "admin",5 ,5,"admin@gmail.com","a","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
 //
 //		};
 //	}

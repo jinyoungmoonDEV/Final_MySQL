@@ -3,20 +3,17 @@ package com.example.Base.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.Base.domain.entity.UserEntity;
+import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.dto.error.ResponseDTO;
 import com.example.Base.domain.dto.user.UserDTO;
+import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.json.HTTP;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -36,21 +33,20 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Log4j2
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor //생성자 주입
-@CrossOrigin("*")
 @RequestMapping("/user")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
-//    private final NotificationService notificationService;
+    private final NotificationService notificationService;
 
-//    @GetMapping(value = "/subscribe", produces = "text/event-stream")
-//    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId/*, HttpServletRequest request*/){
-//
-////        UserDTO userDTO = tokenService.decodeJWT(request);
-////        String email = userDTO.getEmail();
-//
-//        return notificationService.subscribe("user@gmail.com",lastEventId);
-//    }
+    @GetMapping(value = "/subscribe", produces = "text/event-stream")
+    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId/*, HttpServletRequest request*/){
+
+//        UserDTO userDTO = tokenService.decodeJWT(request);
+//        String email = userDTO.getEmail();
+
+        return notificationService.subscribe("user@gmail.com",lastEventId);
+    }
 
     @PostMapping(value = "/signin")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
@@ -67,7 +63,7 @@ public class UserController {
 
             response.addCookie(cookie);
 
-            return ResponseEntity.ok().body(userDTO);
+            return ResponseEntity.ok().body("signin success");
 
         } catch (Exception e) {
             log.info("error");
@@ -137,12 +133,13 @@ public class UserController {
 
         String email = decodedJWT.getSubject();
         String name = decodedJWT.getIssuer();
-        String role = decodedJWT.getClaim("role").toString();
+        String role = decodedJWT.getClaim("role").toString().replace("\"", "");
 
         UserDTO result = UserDTO.builder()
                 .email(email)
                 .name(name)
                 .role(role).build();
+
         return ResponseEntity.ok().body(result);
     }
 

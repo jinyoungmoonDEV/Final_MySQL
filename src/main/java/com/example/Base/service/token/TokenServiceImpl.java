@@ -7,7 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.repository.UserRepository;
-import com.example.Base.security.TokenProvider;
+import com.example.Base.JWT.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

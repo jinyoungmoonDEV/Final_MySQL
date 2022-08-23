@@ -1,5 +1,7 @@
 package com.example.Base.controller;
 
+import com.example.Base.SSE.NotificationService;
+import com.example.Base.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.chat.ChatDTO;
 import com.example.Base.service.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ import java.util.List;
 public class ChatController {
 
     private final UserServiceImpl userService;
+
+    private final NotificationService notificationService;
 
     HttpClient client = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(1));
@@ -58,13 +62,40 @@ public class ChatController {
     }
 
     @PostMapping("/insert")
-    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
-        return webClient.post()
+    public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
+        Mono<ChatDTO> result =  webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
+
+        ChatDTO chat = result.share().block();
+        Integer chatRoom = chat.getRoom();
+
+        if (chatDTO.getInfo().get(0).getUser().isEmpty()){
+            String sender =chatDTO.getInfo().get(0).getGosu();
+            String user = chat.getUser();
+            log.info("insert by gosu");
+            notificationService.send(user, sender + "님의 새로운 채팅!", NotificationType.CHAT_INSERTED, chatRoom);
+        }
+        else {
+            String sender =chatDTO.getInfo().get(0).getUser();
+            String gosu = chat.getGosu();
+            log.info("insert by user");
+            notificationService.send(gosu, sender + "님의 새로운 채팅!", NotificationType.CHAT_INSERTED, chatRoom);
+        }
+
+        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted");
     }
+
+//    @PostMapping("/insert")
+//    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
+//        return webClient.post()
+//                .uri("/chat/insert")
+//                .bodyValue(chatDTO)
+//                .retrieve()
+//                .bodyToMono(ChatDTO.class);
+//    }
 
     @GetMapping(value = "/sender/room/{room}")
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){

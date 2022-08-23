@@ -1,4 +1,4 @@
-package com.example.Base.security;
+package com.example.Base.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -13,6 +13,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 						.allowedOrigins("http://13.209.67.178:3000")
+						.allowedOrigins("http://13.209.67.178:3001")
 				 		.allowedOrigins("http://13.209.67.178:3002")
 						.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 						.allowedHeaders("*")
