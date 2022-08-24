@@ -16,9 +16,9 @@ public class SurveyDto {
     private Long career;
     private String region;
     /*--------------------------*/
-    private String GosuName;
-    private String GosuAge;
-    private String GosuGender;
-    private String GosuCategory;
-    private String GosuRegion;
+    private String gosuName;
+    private String gosuAge;
+    private String gosuGender;
+    private String gosuCategory;
+    private String gosuRegion;
 }
