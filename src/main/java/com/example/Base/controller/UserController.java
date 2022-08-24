@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.Base.WebSocket.websocket.controller.SSE.NotificationService;
 import com.example.Base.domain.dto.error.ResponseDTO;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
@@ -14,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -37,16 +37,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
-    private final NotificationService notificationService;
 
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId/*, HttpServletRequest request*/){
-
-//        UserDTO userDTO = tokenService.decodeJWT(request);
-//        String email = userDTO.getEmail();
-
-        return notificationService.subscribe("user@gmail.com",lastEventId);
-    }
+//    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+//    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId/*, HttpServletRequest request*/){
+//
+////        UserDTO userDTO = tokenService.decodeJWT(request);
+////        String email = userDTO.getEmail();
+//
+//        return notificationService.subscribe("user@gmail.com",lastEventId);
+//    }
 
     @PostMapping(value = "/signin")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
