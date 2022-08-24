@@ -56,8 +56,8 @@ public class SurveyController {
         String categoryInfo = userService.getCategory(a);  // email 정보로 고수회원 정보에서 카테고리 뽑아서 survey 서버로 보내주기
 
         return webClient.post()
-                .uri("/matchedList/" + categoryInfo)
-                .bodyValue(emailInfo)
+                .uri("/matchedList")
+                .bodyValue(categoryInfo)
                 .retrieve()
                 .bodyToMono(String.class);
     }
