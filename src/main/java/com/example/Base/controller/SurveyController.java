@@ -49,14 +49,15 @@ public class SurveyController {
                 .bodyToMono(List.class);
     }
 
-    @GetMapping("/matchedList")
+    @PostMapping("/matchedList")
     public Mono<String> getCategory(@RequestBody Map<String,String> emailInfo) {
 
         String a = emailInfo.get("email");
         String categoryInfo = userService.getCategory(a);  // email 정보로 고수회원 정보에서 카테고리 뽑아서 survey 서버로 보내주기
 
-        return webClient.get()
+        return webClient.post()
                 .uri("/matchedList/" + categoryInfo)
+                .bodyValue(emailInfo)
                 .retrieve()
                 .bodyToMono(String.class);
     }
