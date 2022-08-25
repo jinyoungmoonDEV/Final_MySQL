@@ -12,13 +12,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp") //연결 시작점
-                .withSockJS(); //socketjs 사용
+        registry.addEndpoint("/ws"); //연결 시작점
+        registry.addEndpoint("/ws").withSockJS(); //socketjs 사용
     }
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub");
-        registry.setApplicationDestinationPrefixes("/pub");
+        registry.enableSimpleBroker("/sub"); //topic으로 소통
+        registry.setApplicationDestinationPrefixes("/pub"); //특정 컨트롤러로 <=> @MessageMapping
     }
 }

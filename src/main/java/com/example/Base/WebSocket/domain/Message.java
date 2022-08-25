@@ -8,8 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
-    private String type;
-    private String sender;
-    private String channelID;
-    private Object data;
+    private String name;
+//    private String type;
+//    private String sender;
+//    private String channelID;
+//    private Object data;
+//
+//    public void newConnect(){ this.type = "new";}
+//
+//    public void closeConnect(){ this.type = "close";}
 }

@@ -36,19 +36,41 @@
 //
 //    //양방향 데이터 송신
 //    @Override
-//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-//        Message message = Utils.get
+//    protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
+//        Message message = Utils.getObject(textMessage.getPayload());
+//        message.setSender(session.getId());
+//
+//        WebSocketSession receiver = sessions.get(message.getReciever());
+//        if (receiver != null && receiver.isOpen()){
+//            receiver.sendMessage(new TextMessage(Utils.getString(message)));
+//        }
 //    }
 //
 //    //소캣 연결 종료
 //    @Override
 //    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-//        super.afterConnectionClosed(session, status);
+//        String sessionID = session.getId();
+//
+//        sessions.remove(sessionID);
+//
+//        final Message message = new Message();
+//        message.closeConnect();
+//        message.setSender(sessionID);
+//
+////        sessions.values().forEach(s -> {
+////            try {
+////                s.sendMessage(new TextMessage(Utils.getString(message)));
+////            } catch (Exception e) {
+////                //throw
+////            }
+////        });
 //    }
 //
 //    //소캣 통신 에러
 //    @Override
 //    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-//        super.handleTransportError(session, exception);
+//        String sessionID = session.getId();
+//
+//        sessions.remove(sessionID);
 //    }
 //}
