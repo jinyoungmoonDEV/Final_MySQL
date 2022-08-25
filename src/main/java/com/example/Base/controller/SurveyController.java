@@ -1,5 +1,6 @@
 package com.example.Base.controller;
 
+import com.example.Base.domain.dto.SurveyDto;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Map;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(value = "/", produces="application/json;charset=UTF-8")
 public class SurveyController {
     private final UserServiceImpl userService;
     WebClient webClient = WebClient.builder()
@@ -61,7 +63,8 @@ public class SurveyController {
                 .bodyToMono(List.class);
     }
 
-    @PostMapping("/quotation/{id}")
+
+    @PostMapping(value = "/quotation/{id}", produces="application/json;charset=UTF-8")
     public Mono<SurveyDto> getCategory(@PathVariable String id, @RequestBody Map<String, String> emailInfo) {
 
         String emailValue = emailInfo.get("email");
@@ -71,18 +74,19 @@ public class SurveyController {
         String gosuGender = gosuInfo.getGender();
         String gosuCategory = gosuInfo.getCategory();
         String gosuRegion = gosuInfo.getAddress();
-//        Integer gosuCareer = gosuInfo.getCareer();
+        Integer gosuCareer = gosuInfo.getCareer();
+        log.info("gosuCareer : " + gosuCareer);
+        SurveyDto a = new SurveyDto();
+        a.setGosuName(gosuName);
+        a.setGosuAge(gosuAge);
+        a.setGosuGender(gosuGender);
+        a.setGosuCategory(gosuCategory);
+        a.setGosuRegion(gosuRegion);
+        a.setGosuCareer(gosuCareer);
 
         return webClient.post()
                 .uri("/quotation/" + id)  // <-- 고수회원 정보 List type으로 넘겨주기
-                .headers(httpHeaders ->
-                {httpHeaders.add("GosuName", gosuName);
-                    httpHeaders.add("GosuAge", gosuAge.toString());
-                    httpHeaders.add("GosuGender", gosuGender);
-                    httpHeaders.add("GosuCategory", gosuCategory);
-                    httpHeaders.add("GosuRegion", gosuRegion);
-//                    httpHeaders.add("GosuCareer", gosuCareer.toString());
-                })
+                .bodyValue(a)
                 .retrieve()
                 .bodyToMono(SurveyDto.class);
     }

@@ -12,13 +12,14 @@ public class SurveyDto {
     private String email;
     private String category;
     private String gender;
-    private Long age;
-    private Long career;
+    private Integer age;
+    private Integer career;  // 유저가 원하는 고수의 경력
     private String region;
     /*--------------------------*/
     private String gosuName;
-    private String gosuAge;
+    private Integer gosuAge;
     private String gosuGender;
     private String gosuCategory;
     private String gosuRegion;
+    private Integer gosuCareer;  // 고수의 실제 경력
 }

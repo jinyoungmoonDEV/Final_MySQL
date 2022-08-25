@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,7 +13,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.Duration;
 
@@ -56,25 +54,14 @@ public class ChatController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
-        log.info(chatDTO);
-        Mono<ChatDTO> result =  webClient.post()
+    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
+
+        return webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
-
-        return ResponseEntity.created(URI.create("/chat/insert")).body("Inserted");
     }
-
-//    @PostMapping("/insert")
-//    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
-//        return webClient.post()
-//                .uri("/chat/insert")
-//                .bodyValue(chatDTO)
-//                .retrieve()
-//                .bodyToMono(ChatDTO.class);
-//    }
 
     @GetMapping(value = "/sender/room/{room}")
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){

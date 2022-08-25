@@ -18,6 +18,6 @@ public class QuotationDto {
     private Integer gosuCareer;  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private String gosuCategory; // 위와 동일
     private String gosuRegion; // 위와 동일
-    private Long quotationPrice; // 프론트에서 받아올 것
+    private Integer quotationPrice; // 프론트에서 받아올 것
     private String introduction;  // 프론트에서 받아올 것
 }
