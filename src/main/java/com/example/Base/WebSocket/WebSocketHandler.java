@@ -1,19 +1,15 @@
 package com.example.Base.WebSocket;
 
-import com.example.Base.WebSocket.domain.Message;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.service.token.TokenServiceImpl;
-import com.sun.xml.bind.Utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,7 +37,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.info("session : " + session);
         log.info("content : " + message);
 
+        TextMessage test = new TextMessage("aaa"+"aaa");
         String sender = session.getId();
+
         log.info(sender);
     }
 
@@ -60,4 +58,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         sessions.remove(sessionID);
     }
+
+    //로그인 성공시 혹은 로그인 철와동시에 session구독 처리 한다.
+    // 개별 서비스 로직에서 알림이 필요한 서비스 구동시 처리 후 확인 되면 알림 메소드를 특정 session구독자들 모아둔 곳에서 보내고자하는 session을 찾아서 그 새션에 보낸다 보낸다
 }
