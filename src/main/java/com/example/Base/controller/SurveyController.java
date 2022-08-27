@@ -45,6 +45,7 @@ public class SurveyController {
     // 모든 survey 조회 (확인 용도로 만들어둠)
     @GetMapping("/survey/all")
     public Mono<List> showSurveys() {
+
         return webClient.get()
                 .uri("/survey/all")
                 .retrieve()

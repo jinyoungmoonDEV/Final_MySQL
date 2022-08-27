@@ -34,11 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-        customAuthenticationFilter.setFilterProcessesUrl("/api/login"); //custom한 필터를 처리하는 url 설정*/
 
         http.csrf().disable(); //보안을 위해 disable
-        http.cors(); //서로 출처가 다른 웹 애플리케이션에서 자원을 공유하는 것, react연동시 해제하고 proxy 설정
+        http.cors(); //서로 출처가 다른 웹 애플리케이션에서 자원을 공유하는 것, react 연동시 proxy 설정
 
         //http.formLogin().loginPage("/").loginProcessingUrl("/api/login").usernameParameter("email"); //loginpage url 설정하고, login 인증 처리하는 url 설정하여 인증하는 필터를 호출
 
@@ -47,12 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//session사용 안하므로 STATELESS로 끄기
 
-        http.authorizeRequests().antMatchers("/user/**", "/category/**", "/chat/**","/matchedList/**", "/quotation/**", "/quotationSubmit/**", "/matchedgosulist/**", "/ws/**").permitAll();
-//        http.authorizeRequests().antMatchers("/user/signin/**", "/category/**", "/chat/**","/user/check", "/user/token/refresh").permitAll();
-//        http.authorizeRequests().antMatchers(GET,  "/user/**").hasAuthority("ROLE_USER");
-//        http.authorizeRequests().antMatchers(GET, "/user/**").hasAuthority("ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers(GET, "/gosu/**").hasAuthority("ROLE_GOSU");
-//        http.authorizeRequests().antMatchers(POST, "/user/signup", "/user/gosu/signup").permitAll();
+        http.authorizeRequests().antMatchers( "/category/**", "/chat/**").permitAll();
+        http.authorizeRequests().antMatchers("/matchedList/**").hasAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "/user/**", "/matchedgosulist/**").hasAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "/user/**").permitAll();
+        http.authorizeRequests().antMatchers().hasAuthority("ROLE_ADMIN");
+        http.authorizeRequests().antMatchers("/gosu/**", "/quotationSubmit/**", "/quotation/**").hasAuthority("ROLE_GOSU");
         http.authorizeRequests().anyRequest().authenticated(); //나머지 리퀘스트들은 인증이 필요하다
 
 //        http.addFilter(customAuthenticationFilter); //아래 메서드 사용

@@ -1,7 +1,6 @@
 package com.example.Base;
 
 import com.example.Base.domain.dto.user.UserDTO;
-import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.service.user.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,9 +23,6 @@ public class BaseApplication {
 	@Bean //spring이 pickup하게
 	CommandLineRunner run(UserService userService) {
 		return args -> {
-			userService.saveRole(new RoleEntity(null, "ROLE_USER"));
-			userService.saveRole(new RoleEntity(null, "ROLE_GOSU"));
-			userService.saveRole(new RoleEntity(null, "ROLE_ADMIN"));
 
 			userService.saveUser(new UserDTO(null , "user", 20, 3, "user@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
 			userService.saveUser(new UserDTO(null , "user2",25, 3,"user2@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
@@ -39,7 +35,6 @@ public class BaseApplication {
 			userService.saveUser(new UserDTO(null , "gosu3",35, 3,"gosu3@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
 			userService.saveUser(new UserDTO(null , "gosu4",35, 5,"gosu4@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
 			userService.saveUser(new UserDTO(null , "admin",40, 3,"admin@gmail.com","편의점 알바","1234","a","a","c","d","e",1.1,2,3,"ROLE_ADMIN"));
-
 
 		};
 	}

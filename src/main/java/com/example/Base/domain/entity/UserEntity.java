@@ -16,26 +16,41 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "user")
 public class UserEntity {
+
     @Id
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
+
     private String name;
+
     private Integer age;
+
     @Column(unique = true)
     private String email;
 
     private String category;
+
     private String password;
+
     private Integer career;
+
     private String gender;
+
     private String address;
+
     private String category1;
+
     private String category2;
+
     private String category3;
+
     private Double count1;
+
     private Integer count2;
+
     private Integer count3;
+
     private String role;
 
     public UserDTO toDTO() {

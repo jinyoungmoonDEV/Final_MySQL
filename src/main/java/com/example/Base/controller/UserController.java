@@ -38,34 +38,24 @@ public class UserController {
     private final UserService userService;
     private final TokenServiceImpl tokenService;
 
-//    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public SseEmitter subscribe(@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId/*, HttpServletRequest request*/){
-//
-////        UserDTO userDTO = tokenService.decodeJWT(request);
-////        String email = userDTO.getEmail();
-//
-//        return notificationService.subscribe("user@gmail.com",lastEventId);
-//    }
-
     @PostMapping(value = "/signin")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
 
-            Cookie cookie = new Cookie("Cookie","Choco");
+            Cookie cookie = new Cookie("Cookie","forSecure");
 
             cookie.setMaxAge(7*24*60*60);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
+            cookie.setHttpOnly(true); //token 쿠키 저장 방식의 csrf 취약 문제 방지 위해  httponly true 설정
+            cookie.setSecure(true); //security : true
             cookie.setPath("/");
 
             response.addCookie(cookie);
 
-            return ResponseEntity.ok().body("signin success");
+            return ResponseEntity.ok().body("SignIn Success");
 
         } catch (Exception e) {
-            log.info("error");
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
@@ -78,11 +68,9 @@ public class UserController {
         try {
             userDTO.setRole("ROLE_USER");
 
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/user/signup").toUriString());// = localhost8080:/api/user/save
-            return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+            return ResponseEntity.created(URI.create("/user/signup")).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
-            log.info("error");
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
@@ -95,11 +83,9 @@ public class UserController {
         try {
             userDTO.setRole("ROLE_GOSU");
 
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/gosu/signup").toUriString());// = localhost8080:/api/user/save
-            return ResponseEntity.created(uri).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
+            return ResponseEntity.created(URI.create("/user/gosu/signup")).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
-            log.info("error");
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
@@ -107,37 +93,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/client/info")
-    public ResponseEntity userinfo(@RequestBody Map<String, String> email){
-        String input = email.get("email");
-        return ResponseEntity.ok().body(userService.clientInfo(input));
+    @GetMapping("/client/info") //클라이언트의 모든 정보
+    public ResponseEntity userinfo(HttpServletRequest request){
+        return ResponseEntity.ok().body(userService.clientInfo(request));
     }
 
-    @PutMapping("/gosu/rating")
+    @PutMapping("/gosu/rating") //전문가 회원
     public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
-        return ResponseEntity.created(URI.create("/gosu/rating")).body(userService.gosuRating(userDTO));
+        return ResponseEntity.ok().body(userService.gosuRating(userDTO));
     }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @GetMapping(value = "/check")
-    public ResponseEntity checkUser(HttpServletRequest request, HttpServletResponse response) {
-        String access_token = request.getHeader("Authorization");
+    public ResponseEntity checkUser(HttpServletRequest request) {
 
-        String token = access_token.substring("Bearer ".length());
-
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        JWTVerifier verifier = JWT.require(algorithm).build();
-        DecodedJWT decodedJWT = verifier.verify(token);
-
-        String email = decodedJWT.getSubject();
-        String name = decodedJWT.getIssuer();
-        String role = decodedJWT.getClaim("role").toString().replace("\"", "");
-
-        UserDTO result = UserDTO.builder()
-                .email(email)
-                .name(name)
-                .role(role).build();
+        UserDTO result = tokenService.decodeJWT(request);
 
         return ResponseEntity.ok().body(result);
     }
@@ -196,10 +167,4 @@ public class UserController {
             throw new RuntimeException("Access token is missing");
         }
     }
-}
-
-@Data
-class RoleToUserForm {
-    private String username;
-    private String roleName;
 }

@@ -16,5 +16,5 @@ public class ChatDTO {
     private String user;
     private String gosu;
     private Integer room;
-    private List<Info> info;
+    private List<Info> info; // 내장 Document
 }

@@ -1,19 +1,21 @@
 package com.example.Base.service.user;
 
 import com.example.Base.domain.dto.user.UserDTO;
-import com.example.Base.domain.entity.RoleEntity;
 import com.example.Base.domain.entity.UserEntity;
-import com.example.Base.repository.RoleRepository;
 import com.example.Base.repository.UserRepository;
+import com.example.Base.service.token.TokenServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,8 +28,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService { //UserDetailsService에서 loadUserByUsername메소드 Override
 
     private final UserRepository userRepository;
-    
-    private final RoleRepository roleRepository;
+
+    private final TokenServiceImpl tokenService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -48,59 +50,63 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
 
     @Override
     public List<UserEntity> getUsers() { //모든 user 불러온다
-        log.info("Fetching all users");
         return userRepository.findAll();
     }
 
     @Override
     public UserEntity getUser(String email) {//email로 유저 정보 가져오기
-        log.info("Fetching user {}", email);
         return userRepository.findByEmail(email);
     }
 
     @Override
     public String getName(String email) {
+
         UserEntity info = userRepository.findByEmail(email);
         String name = info.getName();
+
         return name;
     }
 
     @Override
     public UserEntity saveUser(final UserDTO user) { //유저 정보 DB에 저장
-        log.info("Saving new user {} to the database", user.getName());
 
-        user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
-        UserEntity userEntity = user.toEntity();
+        if (userRepository.findByEmail(user.getEmail()) == null && userRepository.findByName(user.getName()) == null)
+        {
+            log.info("Saving new user {} to the database", user.getName());
 
-        return userRepository.save(userEntity);
-    }
+            user.setPassword(passwordEncoder.encode(user.getPassword())); //password encode
+            UserEntity userEntity = user.toEntity();
 
-    @Override
-    public RoleEntity saveRole(RoleEntity role) { //role 정보 DB에 저장
-        log.info("Saving new role {} to the database", role.getName());
-        return roleRepository.save(role);
+            return userRepository.save(userEntity);
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User Info Already Exist");
+        }
     }
 
    // token, Cookie , Yap
 
     @Override
-    public UserEntity clientInfo(String email) {
-        UserEntity user = userRepository.findByEmail(email);
-        log.info(email);
-        UserDTO userDTO = UserDTO.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole())
-                .build();
+    public UserEntity clientInfo(HttpServletRequest request) {
 
-        return userDTO.toEntity();
+        UserDTO info = tokenService.decodeJWT(request);
+
+        String email = info.getEmail();
+
+        UserEntity user = userRepository.findByEmail(email);
+
+        return user;
     }
 
     @Override
     public String gosuRating(UserDTO userDTO) {
+
         String email = userDTO.getEmail();
+
         UserEntity info = userRepository.findByEmail(email);
+
         UserDTO update = info.toDTO();
+
         update.setCount1(userDTO.getCount1());//별점계산이랑 다른 정수 카운트 메서드 실행 후 update 수정 필요
         update.setCount2(userDTO.getCount2());
         update.setCount3(userDTO.getCount3());
@@ -112,8 +118,10 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
 
     @Override
     public String getCategory(String email) {
+
         UserEntity info = userRepository.findByEmail(email);
         String category = info.getCategory();
+
         return category;
     }
 }

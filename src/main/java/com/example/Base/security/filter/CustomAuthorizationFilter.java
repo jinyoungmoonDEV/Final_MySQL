@@ -68,7 +68,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
                         response.setHeader("error", "Incorrect Token Do Re-Login");
                     }
 
-                    else if (exception.getMessage().startsWith("The Token has expired")) {
+                    else if (exception.getMessage().startsWith("The Token has expired")) {//유효기간 만료 시
                         log.error("Error logging in: {}", exception.getMessage());
                         response.setHeader("error", "Token Has Expired Do Refresh");
                     }
@@ -88,7 +88,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     response.setContentType(APPLICATION_JSON_VALUE);
 
-                    new ObjectMapper().writeValue(response.getOutputStream(), error);
+                    new ObjectMapper().writeValue(response.getOutputStream(), error); //ObjectMapper
                 }
             } else {
                 filterChain.doFilter(request, response);

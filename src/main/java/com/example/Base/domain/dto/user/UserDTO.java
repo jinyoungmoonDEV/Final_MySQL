@@ -11,25 +11,38 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+
     private String id;
+
     private String name;
+
     private Integer age;
+
     private Integer career;
+
     private String email;
 
     private String category;
+
     private String password;
+
     private String gender;
+
     private String address;
+
     private String category1;
+
     private String category2;
+
     private String category3;
+
     private Double count1;
+
     private Integer count2;
+
     private Integer count3;
+
     private String role;
-
-
 
     public UserEntity toEntity() {
         UserEntity userEntity = UserEntity.builder()

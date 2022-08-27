@@ -15,6 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "board")
 public class BoardEntity {
+
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;

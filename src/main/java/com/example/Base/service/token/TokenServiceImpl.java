@@ -29,7 +29,10 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public void loginMethod(UserDTO userDTO, HttpServletResponse response) {
-        UserEntity info = userRepository.findByEmail(userDTO.getEmail());
+
+        String email = userDTO.getEmail();
+
+        UserEntity info = userRepository.findByEmail(email);
 
         if(info == null){
             throw new UsernameNotFoundException("User not found in the database");
@@ -61,14 +64,21 @@ public class TokenServiceImpl implements TokenService{
         String token = access_token.substring("Bearer ".length());
 
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+
         JWTVerifier verifier = JWT.require(algorithm).build();
+
         DecodedJWT decodedJWT = verifier.verify(token);
 
         String email = decodedJWT.getSubject();
+        String name = decodedJWT.getIssuer();
+        String role = decodedJWT.getClaim("role").toString().replace("\"", "");
 
         UserDTO userDTO = UserDTO.builder()
                 .email(email)
+                .name(name)
+                .role(role)
                 .build();
+
         return userDTO;
     }
 }

@@ -65,6 +65,7 @@ public class ChatController {
 
     @GetMapping(value = "/sender/room/{room}")
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){
+
         return webClient.get()
                 .uri("/chat/sender/room/"+ room)
                 .acceptCharset(Charset.forName("UTF-8"))
