@@ -20,22 +20,22 @@ public class BaseApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean //spring이 pickup하게
-	CommandLineRunner run(UserService userService) {
-		return args -> {
-
-			userService.saveUser(new UserDTO(null , "user", 20, 3, "user@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
-			userService.saveUser(new UserDTO(null , "user2",25, 3,"user2@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
-			userService.saveUser(new UserDTO(null , "user3",30, 3, "user3@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
-			userService.saveUser(new UserDTO(null , "user4",30, 3,"user4@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
-			userService.saveUser(new UserDTO(null , "user5",30, 3,"user5@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
-
-			userService.saveUser(new UserDTO(null , "gosu",35, 3,"gosu@gmail.com","편의점 알바","1234","a","강남구","c","d","e",1.1,2,3,"ROLE_GOSU"));
-			userService.saveUser(new UserDTO(null , "gosu2",35, 3,"gosu2@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
-			userService.saveUser(new UserDTO(null , "gosu3",35, 3,"gosu3@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
-			userService.saveUser(new UserDTO(null , "gosu4",35, 5,"gosu4@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
-			userService.saveUser(new UserDTO(null , "admin",40, 3,"admin@gmail.com","편의점 알바","1234","a","a","c","d","e",1.1,2,3,"ROLE_ADMIN"));
-
-		};
-	}
+//	@Bean //spring이 pickup하게
+//	CommandLineRunner run(UserService userService) {
+//		return args -> {
+//
+//			userService.saveUser(new UserDTO(null , "user", 20, 3, "user@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_USER"));
+//			userService.saveUser(new UserDTO(null , "user2",25, 3,"user2@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
+//			userService.saveUser(new UserDTO(null , "user3",30, 3, "user3@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
+//			userService.saveUser(new UserDTO(null , "user4",30, 3,"user4@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
+//			userService.saveUser(new UserDTO(null , "user5",30, 3,"user5@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_ADMIN"));
+//
+//			userService.saveUser(new UserDTO(null , "gosu",35, 3,"gosu@gmail.com","편의점 알바","1234","a","강남구","c","d","e",1.1,2,3,"ROLE_GOSU"));
+//			userService.saveUser(new UserDTO(null , "gosu2",35, 3,"gosu2@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
+//			userService.saveUser(new UserDTO(null , "gosu3",35, 3,"gosu3@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
+//			userService.saveUser(new UserDTO(null , "gosu4",35, 5,"gosu4@gmail.com","편의점 알바","1234","a","b","c","d","e",1.1,2,3,"ROLE_GOSU"));
+//			userService.saveUser(new UserDTO(null , "admin",40, 3,"admin@gmail.com","편의점 알바","1234","a","a","c","d","e",1.1,2,3,"ROLE_ADMIN"));
+//
+//		};
+//	}
 }

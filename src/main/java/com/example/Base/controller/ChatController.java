@@ -1,5 +1,6 @@
 package com.example.Base.controller;
 
+import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.dto.chat.ChatDTO;
 import com.example.Base.service.user.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -8,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.socket.WebSocketSession;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -28,6 +29,8 @@ public class ChatController {
     private final UserServiceImpl userService;
 
 //    private final WebSocketHandler webSocketHandler;
+
+    private final NotificationService notificationService;
 
     HttpClient client = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(1));
@@ -60,15 +63,30 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
+//    @ApiOperation(value = "입력", notes = "채팅 입력")
+//    @PostMapping("/insert")
+//    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
+//
+//        return webClient.post()
+//                .uri("/chat/insert")
+//                .bodyValue(chatDTO)
+//                .retrieve()
+//                .bodyToMono(ChatDTO.class);
+//    }
+
     @ApiOperation(value = "입력", notes = "채팅 입력")
     @PostMapping("/insert")
-    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
+    public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
 
-        return webClient.post()
+        Mono<ChatDTO> a =  webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
+
+        Integer room = a.block().getRoom();
+        notificationService.send("user@gmail.com","님의 새로운 채팅", "chat", room);
+        return ResponseEntity.ok().body("inserted");
     }
 
     @ApiOperation(value = "이력 조회", notes = "채팅 이력 조회")

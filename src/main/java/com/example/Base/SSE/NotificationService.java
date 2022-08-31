@@ -1,14 +1,16 @@
 package com.example.Base.SSE;
 
 import com.example.Base.SSE.domain.Notification;
-import com.example.Base.SSE.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,19 +48,19 @@ public class NotificationService {
         String eventId = makeTimeIncludeId(email);
         log.info("sending dummy");
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + email + "]");
-        for (int i = 0; i< 100; i++) {
-            sleep(1, emitter);
-            sendNotification(emitter, eventId, emitterId, "chat");
-        }
 
 //        executor.execute(() -> {
-//                    try {
-//                        emitter.send(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                        emitter.completeWithError(e);
-//                    }
-//                });
+//            for (int i = 0; i < 15; i++) {
+//                try {
+//                    sleep(1,emitter);
+//                    emitter.send(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    emitter.completeWithError(e);
+//                }
+//            }
+//            emitter.complete();
+//        });
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
@@ -73,7 +75,7 @@ public class NotificationService {
             emitter.send(SseEmitter.event()
                     .id(eventId)
                     .name("sse")
-                    .data(data));
+                    .data(data, MediaType.APPLICATION_JSON));
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
             throw new RuntimeException("연결 오류!");
@@ -98,7 +100,7 @@ public class NotificationService {
 /*-----------------------------------------------------------------------------------------------------------------------------------*/
 //    서버에서 클라이언트로 일방적인 데이터 보내기
 
-    public void send(String receiver, String content, Enum type, Integer chatRoom) {
+    public void send(String receiver, String content, String type, Integer chatRoom) {
         log.info("send");
         log.info(receiver);
         log.info(content);
@@ -117,12 +119,13 @@ public class NotificationService {
         );
     }
 
-    private Notification createNotification(String receiver, String content, Enum type, Integer chatRoom) {
-        if (type == NotificationType.CHAT_INSERTED){
+    private Notification createNotification(String receiver, String content, String type, Integer chatRoom) {
+        if (type.equals("chat")){
             return Notification.builder()
                     .receiver(receiver)
                     .content(content)
                     .url("/chat/sender/room/" + chatRoom)
+                    .notificationType(type)
                     .isRead(false)
                     .build();
         }
@@ -131,6 +134,7 @@ public class NotificationService {
                     .receiver(receiver)
                     .content(content)
                     .url("/???")
+                    .notificationType(type)
                     .isRead(false)
                     .build();
         }
@@ -138,14 +142,27 @@ public class NotificationService {
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
         log.info("send to client");
-        try {
-            emitter.send(SseEmitter.event()
-                    .id(id)
-                    .name("sse")
-                    .data(data));
-        } catch (IOException exception) {
-            emitterRepository.deleteById(id);
-            throw new RuntimeException("연결 오류!");
-        }
+        executor.execute(() -> {
+            try {
+
+                try {
+                    emitter.send(SseEmitter.event()
+                            .id(id)
+                            .name("sse")
+                            .data(data, MediaType.APPLICATION_JSON));
+                } catch (IOException exception){
+                    emitter.completeWithError(exception);
+                }
+
+                emitter.send(SseEmitter.event()
+                        .name("complete"));
+
+                emitter.complete();
+
+            } catch (IOException exception) {
+                emitterRepository.deleteById(id);
+                throw new RuntimeException("연결 오류!");
+            }
+        });
     }
 }

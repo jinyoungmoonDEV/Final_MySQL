@@ -13,9 +13,7 @@ public class Notification {
 
     private String receiver;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NotificationType notificationType;
+    private String notificationType;
 
     private String content; //알람의 내용
 
