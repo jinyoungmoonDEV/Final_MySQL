@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Time;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -48,16 +46,19 @@ public class NotificationService {
         String eventId = makeTimeIncludeId(email);
         log.info("sending dummy");
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + email + "]");
-        sendNotification(emitter, eventId, emitterId, "chat");
+        for (int i = 0; i< 100; i++) {
+            sleep(1, emitter);
+            sendNotification(emitter, eventId, emitterId, "chat");
+        }
 
-        executor.execute(() -> {
-                    try {
-                        emitter.send(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        emitter.completeWithError(e);
-                    }
-                });
+//        executor.execute(() -> {
+//                    try {
+//                        emitter.send(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                        emitter.completeWithError(e);
+//                    }
+//                });
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
@@ -71,6 +72,7 @@ public class NotificationService {
         try {
             emitter.send(SseEmitter.event()
                     .id(eventId)
+                    .name("sse")
                     .data(data));
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
