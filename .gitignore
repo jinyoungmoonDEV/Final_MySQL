@@ -27,7 +27,7 @@ out/
 !**/src/test/**/out/
 
 #rds git
-/src/main/resources/application.yml
+application.yml
 
 ### NetBeans ###
 /nbproject/private/
