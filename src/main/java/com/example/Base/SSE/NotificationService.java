@@ -137,6 +137,7 @@ public class NotificationService {
             log.info("send to client");
             emitter.complete();
             emitterRepository.deleteById(id);
+            subscribe(id,null);
         } catch (Exception exception) {
             emitterRepository.deleteById(id);
             emitter.completeWithError(exception);
