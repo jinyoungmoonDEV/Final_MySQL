@@ -6,11 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +35,7 @@ public class NotificationService {
         log.info("subscribe started");
         String emitterId = makeTimeIncludeId(email);
 
-        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT)); //id가 key, SseEmitter가 value
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
 
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId)); //네트워크 오류
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId)); //시간 초과
@@ -49,18 +47,7 @@ public class NotificationService {
         log.info("sending dummy");
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + email + "]");
 
-//        executor.execute(() -> {
-//            for (int i = 0; i < 15; i++) {
-//                try {
-//                    sleep(1,emitter);
-//                    emitter.send(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss")));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    emitter.completeWithError(e);
-//                }
-//            }
-//            emitter.complete();
-//        });
+
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
@@ -78,7 +65,7 @@ public class NotificationService {
                     .data(data, MediaType.APPLICATION_JSON));
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
-            throw new RuntimeException("연결 오류!");
+            emitter.completeWithError(exception);
         }
     }
 
@@ -141,28 +128,18 @@ public class NotificationService {
     }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
-        log.info("send to client");
-        executor.execute(() -> {
-            try {
 
-                try {
-                    emitter.send(SseEmitter.event()
-                            .id(id)
-                            .name("sse")
-                            .data(data, MediaType.APPLICATION_JSON));
-                } catch (IOException exception){
-                    emitter.completeWithError(exception);
-                }
-
-                emitter.send(SseEmitter.event()
-                        .name("complete"));
-
-                emitter.complete();
-
-            } catch (IOException exception) {
-                emitterRepository.deleteById(id);
-                throw new RuntimeException("연결 오류!");
-            }
-        });
+        try {
+            emitter.send(SseEmitter.event()
+                    .id(id)
+                    .name("sse")
+                    .data(data, MediaType.APPLICATION_JSON));
+            log.info("send to client");
+            emitter.complete();
+            emitterRepository.deleteById(id);
+        } catch (Exception exception) {
+            emitterRepository.deleteById(id);
+            emitter.completeWithError(exception);
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.service.token.TokenServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +31,12 @@ public class NotificationController {
 //        UserDTO user = tokenService.decodeJWT(request);
 //        String email = user.getEmail();
 
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/event-stream");
-        response.setHeader("Content-Type", "text/event-stream");
-        response.setHeader("Cache-Control","no-cache");
-        response.setHeader("Connection", "keep-alive");
+//        response.setCharacterEncoding("UTF-8");
+//        response.setContentType("text/event-stream");
+//        response.setHeader("Content-Type", "text/event-stream");
+//        response.setHeader("Transfer-Encoding","chunked");
+//        response.setHeader("Cache-Control","no-cache");
+//        response.setHeader("Connection", "keep-alive");
 
         return notificationService.subscribe("user@gmail.com", lastEventId);
     }
