@@ -1,12 +1,16 @@
 package com.example.Base.controller;
 
+import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.dto.QuotationDto;
 import com.example.Base.domain.entity.UserEntity;
+import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.aspectj.weaver.patterns.ITokenSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +27,8 @@ import java.util.Map;
 public class QuotationController {
 
     private final UserServiceImpl userService;
+    private final NotificationService notificationService;
+    private final TokenServiceImpl tokenService;
 
     WebClient webClient = WebClient.builder()
             .baseUrl("http://localhost:8010")
@@ -30,11 +37,11 @@ public class QuotationController {
 
     // 견적서 저장 내용 : 견적서(quotation)를 작성한 고수 회원 정보 및 의뢰서(survey)+ 견적가격 및 소개글
     @PostMapping("/quotationSubmit/{id}")
-    public Mono<String> savingQuotation(@PathVariable String id, @RequestBody QuotationDto quotationDto) {
+    public ResponseEntity<String> savingQuotation(@PathVariable String id, @RequestBody QuotationDto quotationDto, HttpServletRequest request) {
         log.info("id from front : " + id);
         log.info("Gosun name on quotation from front : " + quotationDto.getGosuName());
-        String emailInfo = quotationDto.getGosuEmail();
-        UserEntity gosuInfo = userService.getUser(emailInfo);
+        String expertEmail = tokenService.decodeJWT(request).getEmail();
+        UserEntity gosuInfo = userService.getUser(expertEmail);
 
         String gosuName = gosuInfo.getName();
         Integer gosuAge = gosuInfo.getAge();
@@ -50,11 +57,15 @@ public class QuotationController {
         quotationDto.setGosuRegion(gosuRegion);
         quotationDto.setGosuCareer(gosuCareer);
 
-        return webClient.post()
+        Mono<QuotationDto> result = webClient.post()
                 .uri("/quotationSubmit/" + id)
                 .bodyValue(quotationDto)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(QuotationDto.class);
+        String userEmail = result.block().getUserEmail();
+        String quotationId = result.block().getId();
+        notificationService.send(userEmail, gosuName + "님의 새로운 견적서", "quotation", quotationId);
+        return ResponseEntity.ok().body("견적서 저장");
     }
 
     @PostMapping("/matchedgosulist")
