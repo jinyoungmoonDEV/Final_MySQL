@@ -126,4 +126,11 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
 
         return category;
     }
+
+    @Override
+    public List<UserEntity> getAllExpertsByCategory(String category) {
+        return userRepository.findAllByCategory(category);
+    }
+
+
 }

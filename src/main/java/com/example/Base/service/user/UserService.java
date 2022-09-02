@@ -14,4 +14,5 @@ public interface UserService {
     UserEntity clientInfo(HttpServletRequest request);
     String gosuRating(UserDTO userDTO);
     String getCategory(String email);
+    List<UserEntity> getAllExpertsByCategory(String category);
 }

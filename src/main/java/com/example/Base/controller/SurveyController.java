@@ -1,5 +1,6 @@
 package com.example.Base.controller;
 
+import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.dto.SurveyDto;
 import com.example.Base.domain.dto.user.ExpertOnlyDto;
 import com.example.Base.domain.entity.UserEntity;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class SurveyController {
     private final UserServiceImpl userService;
     private final TokenServiceImpl tokenService;
+    private final NotificationService notificationService;
     WebClient webClient = WebClient.builder()
             .baseUrl("http://localhost:8010")
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -32,20 +35,26 @@ public class SurveyController {
 
     // survey data 저장
     @PostMapping("/category/{bigIdpParam}/survey/{SmallIdParam}/save")
-    public Mono<String> saveSurvey(@RequestBody SurveyDto surveyDto,
-                                      @PathVariable Long bigIdpParam,
-                                      @PathVariable Long SmallIdParam) {
+    public ResponseEntity saveSurvey(@RequestBody SurveyDto surveyDto,
+                                     @PathVariable Long bigIdpParam,
+                                     @PathVariable Long SmallIdParam) {
 
         String userEmailInfo = surveyDto.getEmail();  // 일반회원의 email 정보 추출
         String nameInfo = userService.getName(userEmailInfo);  // 뽑은 email 정보로 일반회원 조회하고 name 정보빼서 SurveyDto에 set하고 Survey 서버로 보내기
 
         surveyDto.setName(nameInfo);
 
-        return webClient.post()
+        Mono<SurveyDto> result = webClient.post()
                 .uri("/category/" + bigIdpParam + "/survey/" + SmallIdParam + "/save")
                 .bodyValue(surveyDto)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(SurveyDto.class);
+        String surveyCategory = result.block().getCategory();
+        List allExpert = userService.getAllExpertsByCategory(surveyCategory);
+        String userEmail = result.block().getEmail();
+        String surveyId = result.block().getId();
+//        notificationService.sendList(allExpert, userEmail + "님의 의뢰서", "survey", surveyId);
+        return ResponseEntity.ok().body("의뢰서 저장 완료");
     }
 
     // 모든 survey 조회 (확인 용도로 만들어둠)

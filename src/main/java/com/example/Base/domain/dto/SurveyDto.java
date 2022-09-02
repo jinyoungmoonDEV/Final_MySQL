@@ -10,6 +10,7 @@ import java.util.List;
 @Getter@Setter
 public class SurveyDto {
 
+    private String id;
     private String name;
     private String email;
     private String category;
