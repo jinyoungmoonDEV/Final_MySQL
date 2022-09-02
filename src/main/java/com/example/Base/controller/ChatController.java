@@ -78,17 +78,19 @@ public class ChatController {
     @PostMapping("/insert")
     public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
 
-        Mono<ChatDTO> a =  webClient.post()
+        Mono<ChatDTO> result =  webClient.post()
                 .uri("/chat/insert")
                 .bodyValue(chatDTO)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
 
-        String user = a.block().getUser();
-        String gosu = a.block().getGosu();
-        String room = a.block().getRoom().toString();
+        String user = result.block().getUser();
+        String gosu = result.block().getGosu();
+        String room = result.block().getRoom().toString();
 
-        if (a.block().getInfo().get(0).getUser() != null){
+        Integer index = result.block().getInfo().size();
+
+        if (result.block().getInfo().get(index).getUser() != null){
             notificationService.send(gosu,user + "님의 새로운 채팅", "chat", room);
         }
         else {

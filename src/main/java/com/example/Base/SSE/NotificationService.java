@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,6 +44,8 @@ public class NotificationService {
             emitterRepository.deleteAllEmitterStartWithId(email);
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }
+
+        //emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
 
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId)); //네트워크 오류
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId)); //시간 초과
@@ -107,6 +110,24 @@ public class NotificationService {
                 }
         );
     }
+
+//    public void sendList(List receiver, String content, String type, String urlValue) {
+//
+//        log.info("send");
+//        Notification notification = createNotification(receiver, content, type, urlValue);
+//
+//        // 로그인 한 유저의 SseEmitter 모두 가져오기
+//        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
+//        log.info(sseEmitters);
+//        sseEmitters.forEach(
+//                (key, emitter) -> {
+//                    // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
+//                    emitterRepository.saveEventCache(key, notification);
+//                    // 데이터 전송
+//                    sendToClient(emitter, key, notification);
+//                }
+//        );
+//    }
 
     private Notification createNotification(String receiver, String content, String type, String urlValue) {
 
