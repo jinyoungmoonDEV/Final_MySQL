@@ -34,7 +34,15 @@ public class NotificationService {
         log.info("subscribe started");
         String emitterId = makeTimeIncludeId(email);
 
-        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+        SseEmitter emitter = new SseEmitter();
+
+        if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
+            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+        }
+        else {
+            emitterRepository.deleteAllEmitterStartWithId(email);
+            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+        }
 
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId)); //네트워크 오류
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId)); //시간 초과
@@ -148,7 +156,7 @@ public class NotificationService {
 
             emitter.complete();
 
-            //emitterRepository.deleteById(id);
+            emitterRepository.deleteById(id);
 
         } catch (Exception exception) {
             emitterRepository.deleteById(id);
