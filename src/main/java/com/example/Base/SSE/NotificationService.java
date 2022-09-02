@@ -111,23 +111,23 @@ public class NotificationService {
         );
     }
 
-//    public void sendList(List receiver, String content, String type, String urlValue) {
-//
-//        log.info("send");
-//        Notification notification = createNotification(receiver, content, type, urlValue);
-//
-//        // 로그인 한 유저의 SseEmitter 모두 가져오기
-//        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
-//        log.info(sseEmitters);
-//        sseEmitters.forEach(
-//                (key, emitter) -> {
-//                    // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-//                    emitterRepository.saveEventCache(key, notification);
-//                    // 데이터 전송
-//                    sendToClient(emitter, key, notification);
-//                }
-//        );
-//    }
+    public void sendList(List receiver, String content, String type, String urlValue) {
+
+        log.info("send");
+        Notification notification = createNotification(receiver, content, type, urlValue);
+
+        // 로그인 한 유저의 SseEmitter 모두 가져오기
+        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
+        log.info(sseEmitters);
+        sseEmitters.forEach(
+                (key, emitter) -> {
+                    // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
+                    emitterRepository.saveEventCache(key, notification);
+                    // 데이터 전송
+                    sendToClient(emitter, key, notification);
+                }
+        );
+    }
 
     private Notification createNotification(String receiver, String content, String type, String urlValue) {
 

@@ -53,7 +53,7 @@ public class SurveyController {
         List allExpert = userService.getAllExpertsByCategory(surveyCategory);
         String userEmail = result.block().getEmail();
         String surveyId = result.block().getId();
-//        notificationService.sendList(allExpert, userEmail + "님의 의뢰서", "survey", surveyId);
+        notificationService.sendList(allExpert, userEmail + "님의 의뢰서", "survey", surveyId);
         return ResponseEntity.ok().body("의뢰서 저장 완료");
     }
 
