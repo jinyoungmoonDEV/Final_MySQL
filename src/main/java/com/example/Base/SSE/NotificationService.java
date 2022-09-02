@@ -19,9 +19,7 @@ import java.util.concurrent.Executors;
 public class NotificationService {
     private final EmitterRepositoryImpl emitterRepository;
 
-    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+//    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private void sleep(int seconds, SseEmitter sseEmitter) {
         try {
@@ -32,6 +30,7 @@ public class NotificationService {
         }
     }
     public SseEmitter subscribe(String email, String lastEventId) {
+
         log.info("subscribe started");
         String emitterId = makeTimeIncludeId(email);
 
@@ -42,12 +41,8 @@ public class NotificationService {
         emitter.onError((e) -> emitterRepository.deleteById(emitterId)); //오류
 
         // 503 에러를 방지하기 위한 더미 이벤트 전송
-
         String eventId = makeTimeIncludeId(email);
-        log.info("sending dummy");
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + email + "]");
-
-
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
@@ -58,6 +53,7 @@ public class NotificationService {
     }
 
     private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
+
         try {
             emitter.send(SseEmitter.event()
                     .id(eventId)
@@ -69,15 +65,14 @@ public class NotificationService {
         }
     }
 
-    private String makeTimeIncludeId(String email) {
-        return email + "_" + System.currentTimeMillis();
-    }//Last-Event-ID의 값을 이용하여 유실된 데이터를 찾는데 필요한 시점을 파악하기 위한 형태
+    private String makeTimeIncludeId(String email) { return email + "_" + System.currentTimeMillis(); }//Last-Event-ID의 값을 이용하여 유실된 데이터를 찾는데 필요한 시점을 파악하기 위한 형태
 
     private boolean hasLostData(String lastEventId) {
         return !lastEventId.isEmpty();
     }
 
     private void sendLostData(String lastEventId, String email, String emitterId, SseEmitter emitter) {
+
         Map<String, Object> eventCaches = emitterRepository.findAllEventCacheStartWithByEmail(String.valueOf(email));
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
@@ -87,11 +82,10 @@ public class NotificationService {
 /*-----------------------------------------------------------------------------------------------------------------------------------*/
 //    서버에서 클라이언트로 일방적인 데이터 보내기
 
-    public void send(String receiver, String content, String type, Integer chatRoom) {
+    public void send(String receiver, String content, String type, String urlValue) {
+
         log.info("send");
-        log.info(receiver);
-        log.info(content);
-        Notification notification = createNotification(receiver, content, type, chatRoom);
+        Notification notification = createNotification(receiver, content, type, urlValue);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
@@ -106,30 +100,44 @@ public class NotificationService {
         );
     }
 
-    private Notification createNotification(String receiver, String content, String type, Integer chatRoom) {
+    private Notification createNotification(String receiver, String content, String type, String urlValue) {
+
         if (type.equals("chat")){
             return Notification.builder()
                     .receiver(receiver)
                     .content(content)
-                    .url("/chat/sender/room/" + chatRoom)
+                    .url("/chat/sender/room/" + urlValue)
                     .notificationType(type)
                     .isRead(false)
                     .build();
         }
-        else {
+
+        else if (type.equals("survey")) {
             return Notification.builder()
                     .receiver(receiver)
                     .content(content)
-                    .url("/???")
+                    .url("/quotation/" + urlValue)
                     .notificationType(type)
                     .isRead(false)
                     .build();
+        }
+
+        else if (type.equals("quotation")) {
+            return Notification.builder()
+                    .receiver(receiver)
+                    .content(content)
+                    .url("/matchedgosulist/" + urlValue)
+                    .notificationType(type)
+                    .isRead(false)
+                    .build();
+        }
+
+        else {
+            return null;
         }
     }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
-
-        log.info("send to client");
 
         try {
             emitter.send(SseEmitter.event()
@@ -140,7 +148,7 @@ public class NotificationService {
 
             emitter.complete();
 
-            emitterRepository.deleteById(id);
+            //emitterRepository.deleteById(id);
 
         } catch (Exception exception) {
             emitterRepository.deleteById(id);

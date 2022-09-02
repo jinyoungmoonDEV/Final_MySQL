@@ -86,7 +86,7 @@ public class ChatController {
 
         String user = a.block().getUser();
         String gosu = a.block().getGosu();
-        Integer room = a.block().getRoom();
+        String room = a.block().getRoom().toString();
 
         if (a.block().getInfo().get(0).getUser() != null){
             notificationService.send(gosu,user + "님의 새로운 채팅", "chat", room);
