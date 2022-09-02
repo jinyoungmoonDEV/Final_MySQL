@@ -16,8 +16,12 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@RequiredArgsConstructor
+import java.nio.BufferOverflowException;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Service
+@RequiredArgsConstructor
 @Log4j2
 public class TokenServiceImpl implements TokenService{
 
@@ -59,26 +63,36 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public UserDTO decodeJWT(HttpServletRequest request) {
-        String access_token = request.getHeader("Authorization");
 
-        String token = access_token.substring("Bearer ".length());
+        String access_token = request.getHeader(AUTHORIZATION);
 
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+        if(access_token != null && access_token.startsWith("Bearer ")) {
+            try {
+                String token = access_token.substring("Bearer ".length());
 
-        JWTVerifier verifier = JWT.require(algorithm).build();
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
-        DecodedJWT decodedJWT = verifier.verify(token);
+                JWTVerifier verifier = JWT.require(algorithm).build();
 
-        String email = decodedJWT.getSubject();
-        String name = decodedJWT.getIssuer();
-        String role = decodedJWT.getClaim("role").toString().replace("\"", "");
+                DecodedJWT decodedJWT = verifier.verify(token);
 
-        UserDTO userDTO = UserDTO.builder()
-                .email(email)
-                .name(name)
-                .role(role)
-                .build();
+                String email = decodedJWT.getSubject();
+                String name = decodedJWT.getIssuer();
+                String role = decodedJWT.getClaim("role").toString().replace("\"", "");
 
-        return userDTO;
+                UserDTO userDTO = UserDTO.builder()
+                        .email(email)
+                        .name(name)
+                        .role(role)
+                        .build();
+
+                return userDTO;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            throw new RuntimeException("OMG");
+        }
     }
 }

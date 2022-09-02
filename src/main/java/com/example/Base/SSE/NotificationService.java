@@ -129,17 +129,19 @@ public class NotificationService {
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
 
+        log.info("send to client");
+
         try {
             emitter.send(SseEmitter.event()
                     .id(id)
                     .name("sse")
                     .data(data, MediaType.APPLICATION_JSON)
-                    .reconnectTime(0)
                     .reconnectTime(0));
-            log.info("send to client");
+
             emitter.complete();
+
             emitterRepository.deleteById(id);
-            subscribe(id,null);
+
         } catch (Exception exception) {
             emitterRepository.deleteById(id);
             emitter.completeWithError(exception);

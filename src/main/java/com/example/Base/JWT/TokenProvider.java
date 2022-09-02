@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 @Log4j2
 public class TokenProvider {
 

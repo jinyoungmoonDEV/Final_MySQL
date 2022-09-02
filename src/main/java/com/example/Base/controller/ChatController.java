@@ -84,8 +84,17 @@ public class ChatController {
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
 
+        String user = a.block().getUser();
+        String gosu = a.block().getGosu();
         Integer room = a.block().getRoom();
-        notificationService.send("user@gmail.com","님의 새로운 채팅", "chat", room);
+
+        if (a.block().getInfo().get(0).getUser() != null){
+            notificationService.send(gosu,user + "님의 새로운 채팅", "chat", room);
+        }
+        else {
+            notificationService.send(user, gosu + "님의 새로운 채팅", "chat", room);
+        }
+
         return ResponseEntity.ok().body("inserted");
     }
 
