@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -114,7 +115,10 @@ public class NotificationService {
     public void sendList(List receiver, String content, String type, String urlValue) {
 
         log.info("send");
-        Notification notification = createNotification(receiver, content, type, urlValue);
+        List<Notification> notifications = new ArrayList<>();
+        for (int i = 0; i < receiver.size(); i++) {
+            notifications.add(createNotification(receiver.get(i).toString(), content, type, urlValue));
+        }
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
@@ -122,9 +126,9 @@ public class NotificationService {
         sseEmitters.forEach(
                 (key, emitter) -> {
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-                    emitterRepository.saveEventCache(key, notification);
+                    emitterRepository.saveEventCache(key, notifications);
                     // 데이터 전송
-                    sendToClient(emitter, key, notification);
+                    sendToClient(emitter, key, notifications);
                 }
         );
     }
