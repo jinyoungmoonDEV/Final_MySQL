@@ -128,8 +128,16 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     }
 
     @Override
-    public List<UserEntity> getAllExpertsByCategory(String category) {
-        return userRepository.findAllByCategory(category);
+    public List getAllExpertsByCategory(String category) {
+
+        List ls = new ArrayList();
+        List<UserEntity> userEntities = userRepository.findAllByCategory(category);
+
+        for (int i=0; i<userEntities.size(); i++) {
+            ls.add(userEntities.get(i).getEmail());
+        }
+
+        return ls;
     }
 
 

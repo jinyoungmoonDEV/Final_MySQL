@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter@Setter
-@Builder
+//@Builder
 // 견적서
 public class QuotationDto {
 

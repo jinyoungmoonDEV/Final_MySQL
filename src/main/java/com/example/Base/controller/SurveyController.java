@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ public class SurveyController {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
+
+
     // survey data 저장
     @PostMapping("/category/{bigIdpParam}/survey/{SmallIdParam}/save")
     public ResponseEntity saveSurvey(@RequestBody SurveyDto surveyDto,
@@ -49,12 +52,23 @@ public class SurveyController {
                 .bodyValue(surveyDto)
                 .retrieve()
                 .bodyToMono(SurveyDto.class);
-        String surveyCategory = result.block().getCategory();
+
+        List<SurveyDto> surveyInfo = new ArrayList<>();
+
+        surveyInfo.add(result.block());
+        log.info("sureyInfo : " + surveyInfo.get(0));
+        String surveyCategory = surveyInfo.get(0).getCategory();
+        log.info("survey Category : " + surveyCategory);
+
         List allExpert = userService.getAllExpertsByCategory(surveyCategory);
-        String userEmail = result.block().getEmail();
-        String surveyId = result.block().getId();
+
+        log.info("all expert email : " + allExpert);
+        String userEmail = surveyInfo.get(0).getEmail();
+        String surveyId = surveyInfo.get(0).getId();
         notificationService.sendList(allExpert, userEmail + "님의 의뢰서", "survey", surveyId);
-        return ResponseEntity.ok().body("의뢰서 저장 완료");
+        Map<String,String> map = new HashMap<>();
+        map.put("저장 상태", "의뢰서 저장");
+        return ResponseEntity.ok().body(map);
     }
 
     // 모든 survey 조회 (확인 용도로 만들어둠)
