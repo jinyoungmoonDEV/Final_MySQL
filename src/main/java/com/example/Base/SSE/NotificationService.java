@@ -120,7 +120,7 @@ public class NotificationService {
         List<Notification> notifications = new ArrayList<>();
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
-        Map<String, SseEmitter> sseEmitters = new HashMap<>();
+        Map<String, SseEmitter> sseEmitters;
 
         for (int i = 0; i < receiver.size(); i++) {
             int finalI = i;
