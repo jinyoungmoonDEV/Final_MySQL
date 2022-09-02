@@ -4,10 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.Base.JWT.TokenProvider;
 import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.dto.error.ResponseDTO;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
+import com.example.Base.repository.UserRepository;
+import com.example.Base.service.kakao.KakaoApiService;
 import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,15 +40,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/user")//아래에 있는 모든 mapping은 문자열/api를 포함해야한다.
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
     private final TokenServiceImpl tokenService;
+    private final TokenProvider tokenProvider;
+    private final KakaoApiService kakaoService;
+
+    Cookie cookie = new Cookie("Cookie","forSecure");
 
     @PostMapping(value = "/signin")
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
              tokenService.loginMethod(userDTO, response);
-
-            Cookie cookie = new Cookie("Cookie","forSecure");
 
             cookie.setMaxAge(7*24*60*60);
             cookie.setHttpOnly(true); //token 쿠키 저장 방식의 csrf 취약 문제 방지 위해  httponly true 설정
@@ -166,6 +172,48 @@ public class UserController {
             }
         } else {
             throw new RuntimeException("Access token is missing");
+        }
+    }
+
+    @GetMapping("/kakao/{code}")
+    public ResponseEntity kakaoLogin(@PathVariable String code, HttpServletResponse response) {
+        log.info("code from front : " + code);
+        try {
+            // 인증코드로 Resource server 로 부터 토큰을 발급 받는다.
+            String accessToken = kakaoService.getAccessToken(code);
+
+            // 1. 이미 우리 회원인 (DB에 있는 회원) user 정보 가져온다.
+            // 2. 우리 회원이 아니라면 kakaoService 로직에서 유저를 생성하고 유저 정보를 보내주는 방식으로 진행한다.
+            Map<String, String> kakaoUserInfo = kakaoService.getUserInfo(accessToken);
+//            String userName = kakaoUserInfo.get("name");
+            String userEmail = kakaoUserInfo.get("email");
+//            String imageURL = kakaoUserInfo.get("profileImageURL");
+            // 로그인 처리 메소드 위임
+            UserEntity info = userRepository.findByEmail(userEmail);
+            // 가져온 정보로 토큰 생성
+            tokenProvider.createToken(info.toDTO(), response);
+
+            // 해더에 담아서 보내기
+
+            // 쿠키 보안 설정
+            cookie.setMaxAge(7*24*60*60);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+
+
+            response.addCookie(cookie);
+            Map<String,String> loginStatus = new HashMap<>();
+            loginStatus.put("login status", "로그인 성공!");
+
+            log.info("🔥 ac on header : " + response.getHeader("access_token"));
+            log.info("🔥 rc on header : " + response.getHeader("refresh_token"));
+
+            return ResponseEntity.ok().body(loginStatus);
+        } catch (Exception e) {
+            log.info("error");
+            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+            return ResponseEntity.badRequest().body(responseDTO);
         }
     }
 }

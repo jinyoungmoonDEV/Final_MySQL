@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+
 @Log4j2
 @Getter@Setter
 public class SurveyDto {
@@ -14,7 +16,7 @@ public class SurveyDto {
     private String gender;
     private Integer age;
     private Integer career;  // 유저가 원하는 고수의 경력
-    private String region;
+    private List region;
     /*--------------------------*/
     private String gosuName;
     private Integer gosuAge;

@@ -17,9 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor//종속성 주입
@@ -62,9 +60,13 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     public String getName(String email) {
 
         UserEntity info = userRepository.findByEmail(email);
-        String name = info.getName();
+        try {
+            return info.getName();
 
-        return name;
+        } catch (Exception e) {
+            Map<String,String> map = new HashMap<>();
+            return map.put("회원 여부", "없는 회원입니다.");
+        }
     }
 
     @Override
