@@ -1,6 +1,7 @@
 package com.example.Base.controller;
 
 import com.example.Base.SSE.NotificationService;
+import com.example.Base.domain.dto.QuotationDto;
 import com.example.Base.domain.dto.chat.ChatDTO;
 import com.example.Base.service.user.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -19,6 +20,8 @@ import reactor.netty.http.client.HttpClient;
 
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @Log4j2
@@ -84,13 +87,18 @@ public class ChatController {
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
 
-        String user = result.block().getUser();
-        String gosu = result.block().getGosu();
-        String room = result.block().getRoom().toString();
+        List<ChatDTO> resultList = new ArrayList();
+        resultList.add(result.block());
 
-        Integer index = result.block().getInfo().size();
+        ChatDTO input = resultList.get(0);
 
-        if (result.block().getInfo().get(index).getUser() != null){
+        String user = input.getUser();
+        String gosu = input.getGosu();
+        String room = input.getRoom().toString();
+
+        Integer index = input.getInfo().size();
+
+        if (input.getInfo().get(index).getUser() != null){
             notificationService.send(gosu,user + "님의 새로운 채팅", "chat", room);
         }
         else {
