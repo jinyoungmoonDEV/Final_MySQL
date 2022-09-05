@@ -22,17 +22,6 @@ public class NotificationController {
 
     @GetMapping(value = "/subscribe/{email}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PathVariable String email, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId, HttpServletRequest request){
-
-//        UserDTO user = tokenService.decodeJWT(request);
-//        String email = user.getEmail();
-
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("text/event-stream");
-//        response.setHeader("Content-Type", "text/event-stream");
-//        response.setHeader("Transfer-Encoding","chunked");
-//        response.setHeader("Cache-Control","no-cache");
-//        response.setHeader("Connection", "keep-alive");
-
         return notificationService.subscribe(email, lastEventId);
     }
 }

@@ -37,7 +37,7 @@ public class NotificationService {
         log.info("subscribe started");
         String emitterId = makeTimeIncludeId(email);
 
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter;
 
         if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
@@ -46,8 +46,6 @@ public class NotificationService {
             emitterRepository.deleteAllEmitterStartWithId(email);
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }
-
-        //emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
 
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId)); //네트워크 오류
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId)); //시간 초과
@@ -136,24 +134,6 @@ public class NotificationService {
                     }
             );
         }
-
-//        for (int i = 0; i < receiver.size(); i++) {
-//            sseEmitters = new HashMap<>();
-//            notifications.add(createNotification(receiver.get(i).toString(), content, type, urlValue));
-//            sseEmitters.putAll(emitterRepository.findAllEmitterStartWithByEmail(receiver.get(i).toString()));
-//        }
-//
-//        for (int i=0; i<notifications.size(); i++) {
-//            int finalI = i;
-//            sseEmitters.forEach(
-//                    (key, emitter) -> {
-//                        // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-//                        emitterRepository.saveEventCache(key, notifications.get(finalI));
-//                        // 데이터 전송
-//                        sendToClient(emitter, key, notifications.get(finalI));
-//                    }
-//            );
-//        }
     }
 
     private Notification createNotification(String receiver, String content, String type, String urlValue) {
