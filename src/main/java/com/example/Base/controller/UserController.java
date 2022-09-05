@@ -125,16 +125,10 @@ public class UserController {
         String refresh_token = request.getHeader(AUTHORIZATION);
         if(refresh_token != null && refresh_token.startsWith("Bearer ")) {
             try {
-                String past_token = refresh_token.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(past_token);
+                UserDTO user = tokenService.decodeJWT(request);
 
-                String email = decodedJWT.getSubject();
-
-                UserEntity user = userService.getUser(email);//유저를 찾는다
-                tokenService.refreshToken(user.toDTO(), response);
+                tokenService.refreshToken(user, response);
 
                 Map<String, String> message = new HashMap<>();
                 message.put("message","Refresh The Token");
