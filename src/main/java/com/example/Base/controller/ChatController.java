@@ -87,7 +87,8 @@ public class ChatController {
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
 
-        List<ChatDTO> resultList = new ArrayList();
+        List<ChatDTO> resultList = new ArrayList<>();
+
         resultList.add(result.block());
 
         ChatDTO input = resultList.get(0);
@@ -96,12 +97,14 @@ public class ChatController {
         String gosu = input.getGosu();
         String room = input.getRoom().toString();
 
-        Integer index = input.getInfo().size();
+        Integer index = input.getInfo().size()-1;
 
         if (input.getInfo().get(index).getUser() != null){
+            log.info("gosu");
             notificationService.send(gosu,user + "님의 새로운 채팅", "chat", room);
         }
         else {
+            log.info(user);
             notificationService.send(user, gosu + "님의 새로운 채팅", "chat", room);
         }
 
