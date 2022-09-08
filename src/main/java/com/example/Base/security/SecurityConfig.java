@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
         http.authorizeRequests().antMatchers("/matchedList/**", "/matchedgosulist/**").hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "/user/**").hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/user/**").permitAll();
-        http.authorizeRequests().antMatchers().hasAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers("/gosu/**", "/quotation/**").hasAuthority("ROLE_GOSU");
         http.authorizeRequests().anyRequest().authenticated(); //나머지 리퀘스트들은 인증이 필요하다
 
