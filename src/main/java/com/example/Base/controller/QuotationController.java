@@ -6,16 +6,14 @@ import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserServiceImpl;
+import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.weaver.patterns.ITokenSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.w3c.dom.ls.LSException;
 import reactor.core.publisher.Mono;
@@ -76,25 +74,29 @@ public class QuotationController {
 
 
     @PostMapping("/matchedgosulist")
-    public Mono<List> searchingQuo(@RequestBody HttpServletRequest request) {
+    public ResponseEntity searchingQuo(HttpServletRequest request) {
         UserDTO userDTO = tokenService.decodeJWT(request);
         String emailfrom = userDTO.getEmail();
         log.info("userEmail info : " + emailfrom);
 
-        return webClient.post()
+        Mono<List> result = webClient.post()
                 .uri("/matchedgosulist")
                 .bodyValue(emailfrom)
                 .retrieve()
                 .bodyToMono(List.class);
+
+        return ResponseEntity.ok().body(result);
     }
 
     //특정 고수 견적서 리스트
     @PostMapping("/matchedgosulist/{id}")
-    public Mono<Object> quotationDetail(@PathVariable String id) {
+    public ResponseEntity quotationDetail(@PathVariable String id) {
 
-        return webClient.post()
+        Mono<Object> result = webClient.post()
                         .uri("/matchedgosulist/" + id)
                         .retrieve()
                         .bodyToMono(Object.class);
+
+        return ResponseEntity.ok().body(result);
     }
 }

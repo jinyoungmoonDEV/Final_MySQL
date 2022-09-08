@@ -73,39 +73,43 @@ public class SurveyController {
 
     // 모든 survey 조회 (확인 용도로 만들어둠)
     @GetMapping("/survey/all")
-    public Mono<List> showSurveys() {
-        return webClient.get()
+    public ResponseEntity showSurveys() {
+        Mono<List> result = webClient.get()
                 .uri("/survey/all")
                 .retrieve()
                 .bodyToMono(List.class);
+        return ResponseEntity.ok().body(result);
     }
 
     // 전문가에게 매칭된 의뢰서 정보들 조회
     @PostMapping("/matchedList")
-    public Mono<List> getCategory(HttpServletRequest request) {
+    public ResponseEntity getCategory(HttpServletRequest request) {
 
         String emailFromToken = tokenService.decodeJWT(request).getEmail();
         UserEntity userEntity = userService.getUser(emailFromToken);
 
-        return webClient.post()
+        Mono<List> result = webClient.post()
                 .uri("/matchedList")
                 .bodyValue(userEntity)
                 .retrieve()
                 .bodyToMono(List.class);
+        return ResponseEntity.ok().body(result);
     }
+
 
     // 요청 리스트 -> 특정 요청 값 + 본인 정보
     @PostMapping(value = "/quotation/{id}", produces="application/json;charset=UTF-8")
-    public Mono<SurveyDto> getCategory(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity getCategory(@PathVariable String id, HttpServletRequest request) {
 
         String emailFromToken = tokenService.decodeJWT(request).getEmail();
         ExpertOnlyDto expertOnlyDto = userService.getUser(emailFromToken).toExpertOnlyDto();  // 고수 정보 조회
 
-        return webClient.post()
+        Mono<SurveyDto> result = webClient.post()
                 .uri("/quotation/" + id)  // <-- 고수회원 정보 List type으로 넘겨주기
                 .bodyValue(expertOnlyDto)
                 .retrieve()
                 .bodyToMono(SurveyDto.class);
+        return ResponseEntity.ok().body(result);
     }
 
 
