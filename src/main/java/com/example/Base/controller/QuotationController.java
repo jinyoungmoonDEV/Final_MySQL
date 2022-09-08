@@ -6,7 +6,6 @@ import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserServiceImpl;
-import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.weaver.patterns.ITokenSource;
@@ -74,29 +73,25 @@ public class QuotationController {
 
 
     @PostMapping("/matchedgosulist")
-    public ResponseEntity searchingQuo(HttpServletRequest request) {
+    public Mono<List> searchingQuo(HttpServletRequest request) {
         UserDTO userDTO = tokenService.decodeJWT(request);
         String emailfrom = userDTO.getEmail();
         log.info("userEmail info : " + emailfrom);
 
-        Mono<List> result = webClient.post()
+        return webClient.post()
                 .uri("/matchedgosulist")
                 .bodyValue(emailfrom)
                 .retrieve()
                 .bodyToMono(List.class);
-
-        return ResponseEntity.ok().body(result);
     }
 
     //특정 고수 견적서 리스트
     @PostMapping("/matchedgosulist/{id}")
-    public ResponseEntity quotationDetail(@PathVariable String id) {
+    public Mono<Object> quotationDetail(@PathVariable String id) {
 
-        Mono<Object> result = webClient.post()
+        return webClient.post()
                         .uri("/matchedgosulist/" + id)
                         .retrieve()
                         .bodyToMono(Object.class);
-
-        return ResponseEntity.ok().body(result);
     }
 }
