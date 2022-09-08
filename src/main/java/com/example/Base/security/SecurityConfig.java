@@ -45,11 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//session사용 안하므로 STATELESS로 끄기
 
-        http.authorizeRequests().antMatchers( "/user/check","/user/token/refresh","/category/**", "/chat/**","/test/subscribe/**", "/kakao/**", "/survey/**", "/quotationSubmit/**").permitAll();
-        http.authorizeRequests().antMatchers("/matchedList/**", "/matchedgosulist/**").hasAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers( "/user/check","/user/token/refresh","/category/**", "/chat/**","/test/subscribe/**", "/kakao/**", "/survey/**", "/quotationSubmit/**","/matchedgosulist/**").permitAll();
+        http.authorizeRequests().antMatchers("/matchedList/**"/*, "/matchedgosulist/**"*/).hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "/user/**").hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/user/**").permitAll();
-        http.authorizeRequests().antMatchers().hasAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers("/gosu/**", "/quotation/**").hasAuthority("ROLE_GOSU");
         http.authorizeRequests().anyRequest().authenticated(); //나머지 리퀘스트들은 인증이 필요하다
 
