@@ -40,6 +40,7 @@ public class NotificationService {
         SseEmitter emitter;
 
         if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
+            emitterRepository.deleteAllEmitterStartWithId(email);
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }
         else {
