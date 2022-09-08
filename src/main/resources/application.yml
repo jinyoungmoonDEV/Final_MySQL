@@ -1,12 +1,29 @@
 server:
   port: 8000
 
+#spring:
+#  datasource:
+#    drive-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://3.38.41.64:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+#    username: final
+#    password: Ghdwlsguq1!
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#
+#    properties:
+#      hibernate:
+#        format_sql: true
+#
+#    show-sql: true
+
 spring:
   datasource:
     drive-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.38.41.64:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
-    username: final
-    password: Ghdwlsguq1!
+    url: jdbc:mysql://localhost:3306/test?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password: root
 
   jpa:
     hibernate:
