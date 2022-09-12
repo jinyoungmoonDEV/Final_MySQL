@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     drive-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://15.165.39.218:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
-    username: final
-    password: Ghdwlsguq1!
+    url: jdbc:mysql://localhost:3306/test1?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+    username: jin
+    password: huyp
 
   jpa:
     hibernate:
