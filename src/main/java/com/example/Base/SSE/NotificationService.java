@@ -6,15 +6,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,19 +19,8 @@ import java.util.concurrent.Executors;
 public class NotificationService {
     private final EmitterRepositoryImpl emitterRepository;
 
-//    private final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    private void sleep(int seconds, SseEmitter sseEmitter) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            sseEmitter.completeWithError(e);
-        }
-    }
     public SseEmitter subscribe(String email, String lastEventId) {
 
-        log.info("subscribe started");
         String emitterId = makeTimeIncludeId(email);
 
         SseEmitter emitter;
@@ -44,7 +30,6 @@ public class NotificationService {
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }
         else {
-            emitterRepository.deleteAllEmitterStartWithId(email);
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }
 
@@ -81,7 +66,7 @@ public class NotificationService {
 
     private boolean hasLostData(String lastEventId) {
         return !lastEventId.isEmpty();
-    }
+    } //Last-Event-Id의 존재 여부 boolean 값
 
     private void sendLostData(String lastEventId, String email, String emitterId, SseEmitter emitter) {
 
@@ -96,12 +81,11 @@ public class NotificationService {
 
     public void send(String receiver, String content, String type, String urlValue) {
 
-        log.info("send");
         Notification notification = createNotification(receiver, content, type, urlValue);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
-        log.info(sseEmitters);
+
         sseEmitters.forEach(
                 (key, emitter) -> {
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
@@ -112,20 +96,22 @@ public class NotificationService {
         );
     }
 
-    public void sendList(List receiver, String content, String type, String urlValue) {
-
-        log.info("send");
+    public void sendList(List receiverList, String content, String type, String urlValue) {
 
         List<Notification> notifications = new ArrayList<>();
 
-        // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters;
 
-        for (int i = 0; i < receiver.size(); i++) {
+        for (int i = 0; i < receiverList.size(); i++) {
+
             int finalI = i;
+
             sseEmitters = new HashMap<>();
-            notifications.add(createNotification(receiver.get(i).toString(), content, type, urlValue));
-            sseEmitters.putAll(emitterRepository.findAllEmitterStartWithByEmail(receiver.get(i).toString()));
+
+            notifications.add(createNotification(receiverList.get(i).toString(), content, type, urlValue));
+
+            sseEmitters.putAll(emitterRepository.findAllEmitterStartWithByEmail(receiverList.get(i).toString()));
+
             sseEmitters.forEach(
                     (key, emitter) -> {
                         // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
