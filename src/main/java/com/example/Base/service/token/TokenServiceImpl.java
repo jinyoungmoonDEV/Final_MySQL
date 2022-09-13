@@ -80,6 +80,7 @@ public class TokenServiceImpl implements TokenService{
                 String name = decodedJWT.getIssuer();
                 String role = decodedJWT.getClaim("role").toString().replace("\"", "");
 
+                log.info(name);
                 UserDTO userDTO = UserDTO.builder()
                         .email(email)
                         .name(name)
