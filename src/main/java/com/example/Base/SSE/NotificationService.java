@@ -84,6 +84,7 @@ public class NotificationService {
 
     public void send(String receiver, String content, NotificationType type, String urlValue) {
 
+        log.info("send");
         Notification notification = createNotification(receiver, content, type, urlValue);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
