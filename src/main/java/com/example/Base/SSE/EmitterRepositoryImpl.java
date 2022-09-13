@@ -51,18 +51,18 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 
     @Override
     public void deleteById(String id) {
-        log.info(emitters);
         emitters.remove(id);
-        log.info(emitters);
     }
 
     @Override
     public void deleteAllEmitterStartWithId(String email) {
+        log.info("before : " + emitters);
         emitters.forEach((key, emitter) -> {
             if (key.startsWith(email)){
                 emitters.remove(key);
             }
         });
+        log.info("after : " + emitters);
     }
 
     @Override
