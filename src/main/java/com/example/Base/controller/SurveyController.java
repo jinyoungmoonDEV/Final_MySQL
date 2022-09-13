@@ -64,9 +64,9 @@ public class SurveyController {
         List allExpert = userService.getAllExpertsByCategory(surveyCategory);
 
         log.info("all expert email : " + allExpert);
-        String userEmail = surveyInfo.get(0).getEmail();
+        String userName = surveyInfo.get(0).getName();
         String surveyId = surveyInfo.get(0).getId();
-        notificationService.sendList(allExpert, userEmail + "님의 의뢰서", NotificationType.SURVEY_INSERTED, surveyId);
+        notificationService.sendList(allExpert, userName + "님의 의뢰서", NotificationType.SURVEY_INSERTED, surveyId);
         Map<String,String> map = new HashMap<>();
         map.put("저장 상태", "의뢰서 저장");
         return ResponseEntity.ok().body(map);
