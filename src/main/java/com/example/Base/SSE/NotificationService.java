@@ -24,19 +24,18 @@ public class NotificationService {
 
         String emitterId = makeTimeIncludeId(email);
 
-        log.info("1");
-//        if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
-//            emitterRepository.deleteAllEmitterStartWithId(email);
-//            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
-//        }
-//        else {
-//            log.info("first");
-//            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
-//        }
+        SseEmitter emitter;
 
-        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+        if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
+            emitterRepository.deleteAllEmitterStartWithId(email);
+            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+        }
+        else {
+            log.info("first");
+            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+        }
 
-        log.info("2");
+
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId)); //네트워크 오류
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId)); //시간 초과
         emitter.onError((e) -> emitterRepository.deleteById(emitterId)); //오류
@@ -85,13 +84,11 @@ public class NotificationService {
 
     public void send(String receiver, String content, NotificationType type, String urlValue) {
 
-        log.info("send");
         Notification notification = createNotification(receiver, content, type, urlValue);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
 
-        log.info("a");
         sseEmitters.forEach(
                 (key, emitter) -> {
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
