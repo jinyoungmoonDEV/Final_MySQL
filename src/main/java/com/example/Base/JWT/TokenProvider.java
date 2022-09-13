@@ -29,6 +29,7 @@ public class TokenProvider {
                 .withSubject(user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3000 * 60 *1000))
                 .withIssuer(user.getName())
+                .withClaim("role", user.getRole())
                 .sign(algorithm);
 
         response.setHeader("access_token", access_token);
