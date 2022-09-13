@@ -27,6 +27,7 @@ public class NotificationService {
         SseEmitter emitter;
 
         if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
+            log.info("delete");
             emitterRepository.deleteById(email);
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }

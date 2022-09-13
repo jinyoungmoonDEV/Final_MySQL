@@ -51,7 +51,9 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 
     @Override
     public void deleteById(String id) {
+        log.info(emitters);
         emitters.remove(id);
+        log.info(emitters);
     }
 
     @Override
