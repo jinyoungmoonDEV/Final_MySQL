@@ -1,6 +1,7 @@
 package com.example.Base.controller;
 
 import com.example.Base.SSE.NotificationService;
+import com.example.Base.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.QuotationDto;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
@@ -67,7 +68,7 @@ public class QuotationController {
         ls.add(result.block());
         String userEmail = ls.get(0).getUserEmail();
         String quotationId = ls.get(0).getId();
-        notificationService.send(userEmail, gosuName + "님의 새로운 견적서", "quotation", quotationId);
+        notificationService.send(userEmail, gosuName + "님의 새로운 견적서", NotificationType.QUOTATION_INSERTED, quotationId);
         return ResponseEntity.ok().body("견적서 저장");
     }
 

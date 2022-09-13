@@ -1,6 +1,7 @@
 package com.example.Base.controller;
 
 import com.example.Base.SSE.NotificationService;
+import com.example.Base.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.QuotationDto;
 import com.example.Base.domain.dto.chat.ChatDTO;
 import com.example.Base.service.user.UserServiceImpl;
@@ -101,11 +102,11 @@ public class ChatController {
 
         if (input.getInfo().get(index).getUser() != null){
             log.info("gosu");
-            notificationService.send(gosu,user + "님의 새로운 채팅", "chat", room);
+            notificationService.send(gosu,user + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
         }
         else {
             log.info(user);
-            notificationService.send(user, gosu + "님의 새로운 채팅", "chat", room);
+            notificationService.send(user, gosu + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
         }
 
         return ResponseEntity.ok().body("inserted");

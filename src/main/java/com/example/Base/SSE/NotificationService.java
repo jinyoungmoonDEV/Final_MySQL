@@ -1,6 +1,7 @@
 package com.example.Base.SSE;
 
 import com.example.Base.SSE.domain.Notification;
+import com.example.Base.SSE.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -79,7 +80,7 @@ public class NotificationService {
 /*-----------------------------------------------------------------------------------------------------------------------------------*/
 //    서버에서 클라이언트로 일방적인 데이터 보내기
 
-    public void send(String receiver, String content, String type, String urlValue) {
+    public void send(String receiver, String content, NotificationType type, String urlValue) {
 
         Notification notification = createNotification(receiver, content, type, urlValue);
 
@@ -96,7 +97,7 @@ public class NotificationService {
         );
     }
 
-    public void sendList(List receiverList, String content, String type, String urlValue) {
+    public void sendList(List receiverList, String content, NotificationType type, String urlValue) {
 
         List<Notification> notifications = new ArrayList<>();
 
@@ -123,7 +124,7 @@ public class NotificationService {
         }
     }
 
-    private Notification createNotification(String receiver, String content, String type, String urlValue) {
+    private Notification createNotification(String receiver, String content, NotificationType type, String urlValue) {
 
         if (type.equals("chat")){
             return Notification.builder()

@@ -1,6 +1,7 @@
 package com.example.Base.controller;
 
 import com.example.Base.SSE.NotificationService;
+import com.example.Base.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.SurveyDto;
 import com.example.Base.domain.dto.user.ExpertOnlyDto;
 import com.example.Base.domain.entity.UserEntity;
@@ -65,7 +66,7 @@ public class SurveyController {
         log.info("all expert email : " + allExpert);
         String userEmail = surveyInfo.get(0).getEmail();
         String surveyId = surveyInfo.get(0).getId();
-        notificationService.sendList(allExpert, userEmail + "님의 의뢰서", "survey", surveyId);
+        notificationService.sendList(allExpert, userEmail + "님의 의뢰서", NotificationType.SURVEY_INSERTED, surveyId);
         Map<String,String> map = new HashMap<>();
         map.put("저장 상태", "의뢰서 저장");
         return ResponseEntity.ok().body(map);
