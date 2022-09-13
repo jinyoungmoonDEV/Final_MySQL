@@ -24,16 +24,17 @@ public class NotificationService {
 
         String emitterId = makeTimeIncludeId(email);
 
-        SseEmitter emitter;
         log.info("1");
-        if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
-            emitterRepository.deleteAllEmitterStartWithId(email);
-            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
-        }
-        else {
-            log.info("first");
-            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
-        }
+//        if (emitterRepository.findAllEmitterStartWithByEmail(email) != null){
+//            emitterRepository.deleteAllEmitterStartWithId(email);
+//            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+//        }
+//        else {
+//            log.info("first");
+//            emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
+//        }
+
+        SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
 
         log.info("2");
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId)); //네트워크 오류
