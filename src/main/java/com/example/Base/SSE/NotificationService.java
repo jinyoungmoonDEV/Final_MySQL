@@ -91,6 +91,7 @@ public class NotificationService {
         // 로그인 한 유저의 SseEmitter 모두 가져오기
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByEmail(receiver);
 
+        log.info("a");
         sseEmitters.forEach(
                 (key, emitter) -> {
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
@@ -166,6 +167,7 @@ public class NotificationService {
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
 
+        log.info("go");
         try {
             emitter.send(SseEmitter.event()
                     .id(id)
