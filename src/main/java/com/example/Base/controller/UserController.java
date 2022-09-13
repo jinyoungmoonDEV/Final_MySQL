@@ -89,7 +89,7 @@ public class UserController {
     public ResponseEntity saveHelper(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_GOSU");
-
+            log.info(userDTO.getAddress());
             return ResponseEntity.created(URI.create("/user/gosu/signup")).body(userService.saveUser(userDTO)); //201 Created => HTTP 201 Created는 요청이 성공적으로 처리되었으며, 자원이 생성되었음을 나타내는 성공 상태 응답 코드(URI 필요)
 
         } catch (Exception e) {
