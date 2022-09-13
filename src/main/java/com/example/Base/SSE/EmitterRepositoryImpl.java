@@ -27,6 +27,8 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 
     @Override
     public void saveEventCache(String eventCacheId, Object event) {
+        log.info(eventCacheId);
+        log.info(event);
         eventCache.put(eventCacheId, event);
     }
 
