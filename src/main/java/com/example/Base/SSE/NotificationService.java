@@ -131,7 +131,7 @@ public class NotificationService {
 
     private Notification createNotification(String receiver, String content, NotificationType type, String urlValue) {
 
-        if (type.equals("chat")){
+        if (type.equals(NotificationType.CHAT_INSERTED)){
             return Notification.builder()
                     .receiver(receiver)
                     .content(content)
@@ -141,7 +141,7 @@ public class NotificationService {
                     .build();
         }
 
-        else if (type.equals("survey")) {
+        else if (type.equals(NotificationType.SURVEY_INSERTED)) {
             return Notification.builder()
                     .content(content)
                     .url("/quotation/" + urlValue)
@@ -150,7 +150,7 @@ public class NotificationService {
                     .build();
         }
 
-        else if (type.equals("quotation")) {
+        else if (type.equals(NotificationType.QUOTATION_INSERTED)) {
             return Notification.builder()
                     .receiver(receiver)
                     .content(content)
@@ -167,7 +167,6 @@ public class NotificationService {
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
 
-        log.info("go");
         try {
             emitter.send(SseEmitter.event()
                     .id(id)
