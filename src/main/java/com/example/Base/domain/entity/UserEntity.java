@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,7 +34,7 @@ public class UserEntity {
     private String password;
     private Integer career;
     private String gender;
-    private String address;
+    private List address;
     private String profileImageURL;
 //    private String category1;
 //    private String category2;

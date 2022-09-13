@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter@Setter
 @Builder
 public class ExpertOnlyDto {
@@ -12,6 +14,6 @@ public class ExpertOnlyDto {
     private Integer gosuAge;
     private String gosuGender;
     private String gosuCategory;
-    private String gosuAddress;
+    private List gosuAddress;
     private Integer gosuCareer;
 }

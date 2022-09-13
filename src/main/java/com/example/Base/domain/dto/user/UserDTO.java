@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class UserDTO {
     private String category;
     private String password;
     private String gender;
-    private String address;
+    private List address;
     private String profileImageURL;
 //    private String category1;
 //    private String category2;
