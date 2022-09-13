@@ -27,11 +27,9 @@ public class NotificationService {
         SseEmitter emitter;
 
         if (emitterRepository.findAllEmitterStartWithByEmail(email).isEmpty()){
-            log.info("first");
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }
         else {
-            log.info("delete");
             emitterRepository.deleteAllEmitterStartWithId(email);
             emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE)); //id가 key, SseEmitter가 value
         }

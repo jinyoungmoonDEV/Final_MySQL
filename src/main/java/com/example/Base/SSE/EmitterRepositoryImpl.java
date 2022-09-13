@@ -21,7 +21,6 @@ public class EmitterRepositoryImpl implements EmitterRepository {
     @Override
     public SseEmitter save(String emitterId, SseEmitter sseEmitter) {
         emitters.put(emitterId, sseEmitter);
-        log.info(emitters);
         return sseEmitter;
     }
 
@@ -56,13 +55,11 @@ public class EmitterRepositoryImpl implements EmitterRepository {
 
     @Override
     public void deleteAllEmitterStartWithId(String email) {
-        log.info("before : " + emitters);
         emitters.forEach((key, emitter) -> {
             if (key.startsWith(email)){
                 emitters.remove(key);
             }
         });
-        log.info("after : " + emitters);
     }
 
     @Override
