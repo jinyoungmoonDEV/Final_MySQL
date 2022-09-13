@@ -28,7 +28,7 @@ public class TokenProvider {
         String refresh_token = JWT.create() //refresh token 생성
                 .withSubject(user.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3000 * 60 *1000))
-                .withIssuer(user.getEmail())
+                .withIssuer(user.getName())
                 .sign(algorithm);
 
         response.setHeader("access_token", access_token);
