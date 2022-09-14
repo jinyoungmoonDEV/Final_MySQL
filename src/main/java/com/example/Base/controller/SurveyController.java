@@ -4,6 +4,7 @@ import com.example.Base.SSE.NotificationService;
 import com.example.Base.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.SurveyDto;
 import com.example.Base.domain.dto.user.ExpertOnlyDto;
+import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
 import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserServiceImpl;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.LongStream;
 
 @Log4j2
 @RestController
@@ -86,7 +88,7 @@ public class SurveyController {
                 .bodyToMono(List.class);
     }
 
-    // 전문가에게 매칭된 의뢰서 정보들 조회
+    // 전문가에게 매칭된 의뢰서 정보들 조회 (요청 리스트)
     @PostMapping("/matchedList")
     public Mono<List> getCategory(HttpServletRequest request) {
 
@@ -105,6 +107,7 @@ public class SurveyController {
     public Mono<SurveyDto> getCategory(@PathVariable String id, HttpServletRequest request) {
 
         String emailFromToken = tokenService.decodeJWT(request).getEmail();
+
         ExpertOnlyDto expertOnlyDto = userService.getUser(emailFromToken).toExpertOnlyDto();  // 고수 정보 조회
 
         return webClient.post()

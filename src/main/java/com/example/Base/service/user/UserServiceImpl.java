@@ -142,21 +142,4 @@ public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //
         return ls;
     }
 
-    // 주소를 리스트 배열에 담아서 리턴 -> 인덱스로 찾아서 String 으로 뽑으면 됨
-    @Override
-    public List splitString(String expertAddress) {
-
-        String excepts = "[^\uAC00-\uD7A30-9a-zA-Z,]";
-        String cleanAddr = expertAddress.replaceAll(excepts, "");
-        String[] eachAddressList = cleanAddr.split(",");
-
-        List ls = new ArrayList();
-
-        for (int i=0; i<eachAddressList.length; i++) {
-            String addr = eachAddressList[i];
-            ls.add(addr);
-        }
-        return ls;
-    }
-
 }
