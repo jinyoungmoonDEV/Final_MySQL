@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //
 
             return userRepository.save(userEntity);
         }
+
         else {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User Info Already Exist");
         }

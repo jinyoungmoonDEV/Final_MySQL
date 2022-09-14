@@ -53,13 +53,20 @@ public class SurveyController {
         String email = userService.getUser(emailInfoFromAC).getEmail();
 
         surveyDto.setName(nameInfo);
-        surveyDto.setEmail(email);
+        Mono<SurveyDto> result = null;
 
-        Mono<SurveyDto> result = webClient.post()
-                .uri("/category/" + bigIdpParam + "/survey/" + SmallIdParam + "/save")
-                .bodyValue(surveyDto)
-                .retrieve()
-                .bodyToMono(SurveyDto.class);
+        if (email != null) {
+            surveyDto.setEmail(email);
+
+            result = webClient.post()
+                    .uri("/category/" + bigIdpParam + "/survey/" + SmallIdParam + "/save")
+                    .bodyValue(surveyDto)
+                    .retrieve()
+                    .bodyToMono(SurveyDto.class);
+        } else {
+            return ResponseEntity.ok().body("email info not found from DB");
+        }
+
 
         List<SurveyDto> surveyInfo = new ArrayList<>();
 
@@ -102,7 +109,18 @@ public class SurveyController {
                 .bodyToMono(List.class);
     }
 
-    // 요청 리스트 -> 특정 요청 값 + 본인 정보
+    @PostMapping("/matchedList/{status}")
+    public Mono<List> getSurveysAccordingToStatus(@PathVariable Integer status, @RequestBody Map<String, List> idValues) {
+        List ids = idValues.get("id");
+
+        return webClient.post()
+                .uri("/matchedList/" + status)
+                .bodyValue(ids)
+                .retrieve()
+                .bodyToMono(List.class);
+    }
+
+    // 요청 리스트 -> 특정 요청 값 + 본인 정보까지 조회
     @PostMapping(value = "/quotation/{id}", produces="application/json;charset=UTF-8")
     public Mono<SurveyDto> getCategory(@PathVariable String id, HttpServletRequest request) {
 
