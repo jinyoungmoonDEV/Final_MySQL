@@ -21,7 +21,7 @@ public class UserEntity {
     @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
-
+    @Column(unique = true)
     private String name;
 
     private Integer age;
