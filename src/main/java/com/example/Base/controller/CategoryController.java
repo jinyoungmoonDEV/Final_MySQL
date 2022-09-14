@@ -21,14 +21,8 @@ public class CategoryController {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
-    @GetMapping("/categories")
-    public Mono<List> showAll(){
-        return webClient.get()
-                .uri( "/categories")
-                .retrieve()
-                .bodyToMono(List.class);
-    }
 
+    // 대 분류 카테고리 9개 조회
     @GetMapping("/{categoryId}")
     public Mono<List> showCategoryName(@PathVariable String categoryId) {
         return webClient.get()
@@ -37,6 +31,7 @@ public class CategoryController {
                 .bodyToMono(List.class);
     }
 
+    // 특정 카테고리 정보 조회
     @GetMapping("/{categoryId}/survey/{indexNum}")
     public Mono<Object> showCategoryInfo(@PathVariable String categoryId, @PathVariable Integer indexNum) {
         log.info("/category/"+categoryId+"/survey/"+indexNum);
@@ -44,5 +39,14 @@ public class CategoryController {
                 .uri( "/category/"+categoryId+"/survey/"+indexNum)
                 .retrieve()
                 .bodyToMono(Object.class);
+    }
+
+    // 테스트용 API 모든 카테고리 정보 조회
+    @GetMapping("/categories")
+    public Mono<List> showAll(){
+        return webClient.get()
+                .uri( "/categories")
+                .retrieve()
+                .bodyToMono(List.class);
     }
 }

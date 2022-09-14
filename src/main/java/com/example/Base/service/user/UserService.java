@@ -15,4 +15,5 @@ public interface UserService {
     String gosuRating(UserDTO userDTO);
     String getCategory(String email);
     List getAllExpertsByCategory(String category);
+    List splitString(String expertAddress);
 }

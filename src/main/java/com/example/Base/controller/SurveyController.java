@@ -40,13 +40,18 @@ public class SurveyController {
     // survey data 저장
     @PostMapping("/category/{bigIdpParam}/survey/{SmallIdParam}/save")
     public ResponseEntity saveSurvey(@RequestBody SurveyDto surveyDto,
+                                     HttpServletRequest request,
                                      @PathVariable Long bigIdpParam,
                                      @PathVariable Long SmallIdParam) {
 
-        String userEmailInfo = surveyDto.getEmail();  // 일반회원의 email 정보 추출
-        String nameInfo = userService.getName(userEmailInfo);  // 뽑은 email 정보로 일반회원 조회하고 name 정보빼서 SurveyDto에 set하고 Survey 서버로 보내기
+
+        String emailInfoFromAC = tokenService.decodeJWT(request).getEmail();
+        log.info("email info from token : " + emailInfoFromAC);
+        String nameInfo = userService.getName(emailInfoFromAC);  // 뽑은 email 정보로 일반회원 조회하고 name 정보빼서 SurveyDto에 set하고 Survey 서버로 보내기
+        String email = userService.getUser(emailInfoFromAC).getEmail();
 
         surveyDto.setName(nameInfo);
+        surveyDto.setEmail(email);
 
         Mono<SurveyDto> result = webClient.post()
                 .uri("/category/" + bigIdpParam + "/survey/" + SmallIdParam + "/save")
