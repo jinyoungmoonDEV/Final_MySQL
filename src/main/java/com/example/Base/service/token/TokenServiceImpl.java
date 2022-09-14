@@ -97,7 +97,7 @@ public class TokenServiceImpl implements TokenService{
             }
         }
         else {
-            throw new RuntimeException("OMG");
+            throw new RuntimeException("No Token");
         }
     }
 }
