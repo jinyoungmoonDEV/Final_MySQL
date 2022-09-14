@@ -48,7 +48,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     String email = decodedJWT.getSubject(); //decode해서 유저정보를 얻어오는 변수
 
-                    String role = decodedJWT.getClaim("role").toString(); //roles라는 key값의 value는 유저의 권한이 있으므로 권한을 가져오는 변수, 권한이 여러개 일 수 있으므로 배열 형식
+                    String role = decodedJWT.getClaim("role").toString(); //roles라는 key값의 value는 유저의 권한이 있으므로 권한을 가져오는 변수
 
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>(); //authorities 변수를 Collection형식으로 생성, Parameter를 SimpleGrantedAuthority로 하는 이유는
                                                                                         // security에서의 권한은 GrantedAuthority 인터페이스를 구현한 객체로 만들면되는데 총 4가지중 문자열만 저장하는 SimpleGrandAuthority사용 하였다
@@ -59,7 +59,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken); //갖고있는 정보를 토대로 security가 권한에따라서 접근 할수 있는지 없는지 판단하기 위해 authention으로 설정, SecurityContextHolder는 security가 인증한 내용들을 갖고 있는것
 
-                    filterChain.doFilter(request, response);//요청이 계속 지속(요청에서 응답까지) 되어야 하므로 filterchain 호출한다.
+                    filterChain.doFilter(request, response);//추출한 권한별 필터링을 진행해야 하므로 다음 필터로 넘긴다.
 
                 }catch (Exception exception) {
 
@@ -79,8 +79,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
                     }
 
                     response.setStatus(FORBIDDEN.value()); //forbidden error code로 보낸다.
-
-                    //response.sendError(FORBIDDEN.value());
 
                     Map<String, String> error = new HashMap<>();
 

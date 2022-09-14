@@ -23,7 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor//종속성 주입
 @Transactional//모든 클래스가 트랜잭션 되야함 -> 모든 작업들이 성공적이여만 묶음 결과를 적용 -> 에러가 나면 모든 작업들이 다시 원 상태로 되돌릴수 있다.
 @Log4j2
-public class UserServiceImpl implements UserService, UserDetailsService { //UserDetailsService에서 loadUserByUsername메소드 Override
+public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //UserDetailsService에서 loadUserByUsername메소드 Override
 
     private final UserRepository userRepository;
 
@@ -32,19 +32,19 @@ public class UserServiceImpl implements UserService, UserDetailsService { //User
     private final PasswordEncoder passwordEncoder;
 
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { //DB에서 유저 정보를 불러오는 중요한 메소드
-        UserEntity user = userRepository.findByEmail(email);
-        if(user == null) {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
-        } else {
-            log.info("User found in the database: {}",email);
-        }
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>(); //Collection은 데이터 집합,그룹
-        authorities.add(new SimpleGrantedAuthority(user.getRole()));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { //DB에서 유저 정보를 불러오는 중요한 메소드
+//        UserEntity user = userRepository.findByEmail(email);
+//        if(user == null) {
+//            log.error("User not found in the database");
+//            throw new UsernameNotFoundException("User not found in the database");
+//        } else {
+//            log.info("User found in the database: {}",email);
+//        }
+//        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>(); //Collection은 데이터 집합,그룹
+//        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+//        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+//    }
 
     @Override
     public List<UserEntity> getUsers() { //모든 user 불러온다

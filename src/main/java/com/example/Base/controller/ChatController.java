@@ -32,8 +32,6 @@ import java.util.List;
 public class ChatController {
     private final UserServiceImpl userService;
 
-//    private final WebSocketHandler webSocketHandler;
-
     private final NotificationService notificationService;
 
     HttpClient client = HttpClient.create()
@@ -66,17 +64,6 @@ public class ChatController {
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
     }
-
-//    @ApiOperation(value = "입력", notes = "채팅 입력")
-//    @PostMapping("/insert")
-//    public Mono<ChatDTO> setMsg(@RequestBody ChatDTO chatDTO){
-//
-//        return webClient.post()
-//                .uri("/chat/insert")
-//                .bodyValue(chatDTO)
-//                .retrieve()
-//                .bodyToMono(ChatDTO.class);
-//    }
 
     @ApiOperation(value = "입력", notes = "채팅 입력")
     @PostMapping("/insert")
