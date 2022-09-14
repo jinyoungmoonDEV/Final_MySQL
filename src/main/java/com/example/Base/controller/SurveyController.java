@@ -3,6 +3,7 @@ package com.example.Base.controller;
 import com.example.Base.SSE.NotificationService;
 import com.example.Base.SSE.domain.NotificationType;
 import com.example.Base.domain.dto.SurveyDto;
+import com.example.Base.domain.dto.SurveyIdListDto;
 import com.example.Base.domain.dto.user.ExpertOnlyDto;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
@@ -10,18 +11,17 @@ import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.LongStream;
 
 @Log4j2
@@ -109,13 +109,14 @@ public class SurveyController {
                 .bodyToMono(List.class);
     }
 
-    @PostMapping("/matchedList/{status}")
-    public Mono<List> getSurveysAccordingToStatus(@PathVariable Integer status, @RequestBody Map<String, List> idValues) {
-        List ids = idValues.get("id");
+    @PostMapping(value = "/matchedList/{status}", produces="application/json;charset=UTF-8")
+    public Mono getSurveysAccordingToStatus(@PathVariable Integer status, @RequestBody SurveyIdListDto surveyIdListDto) {
+        log.info("status : " + status);
+        log.info("survey id info : " + surveyIdListDto.getId());
 
         return webClient.post()
                 .uri("/matchedList/" + status)
-                .bodyValue(ids)
+                .bodyValue(surveyIdListDto)
                 .retrieve()
                 .bodyToMono(List.class);
     }
@@ -134,60 +135,4 @@ public class SurveyController {
                 .retrieve()
                 .bodyToMono(SurveyDto.class);
     }
-
-
-//    @PostMapping("/quotation/{id}")
-//    public Mono<SurveyDto> getCategory(@PathVariable String id, @RequestBody Map<String, String> emailInfo) {
-//        DecodedTokenDto a = new DecodedTokenDto();
-//        String emailValue = a.getEmail();
-//        log.info("email in from jwt : " + emailValue);
-////        String emailValue = emailInfo.get("email");
-//        UserEntity gosuInfo = userService.getUser(emailValue);  // 고수 정보 조회
-//        String gosuName = gosuInfo.getName();
-//        Integer gosuAge = gosuInfo.getAge();
-//        String gosuGender = gosuInfo.getGender();
-//        String gosuCategory = gosuInfo.getCategory();
-//        String gosuRegion = gosuInfo.getAddress();
-//
-//        return webClient.post()
-//                .uri("/quotation/" + id)  // <-- 고수회원 정보 List type으로 넘겨주기
-//                .headers(httpHeaders ->
-//                {httpHeaders.add("GosuName", gosuName);
-//                    httpHeaders.add("GosuAge", gosuAge.toString());
-//                    httpHeaders.add("GosuGender", gosuGender);
-//                    httpHeaders.add("GosuCategory", gosuCategory);
-//                    httpHeaders.add("GosuRegion", gosuRegion);
-//                })
-//                .retrieve()
-//                .bodyToMono(SurveyDto.class);
-//    }
-/*--------------------------------------------------------------*/
-
-/*    @PostMapping("/quotation/{id}")
-    public Mono<SurveyDto> getCategory(@PathVariable String id) {
-
-        DecodedTokenDto forEmail = new DecodedTokenDto();
-        String a = forEmail.getEmail();
-
-        log.info("email in from jwt 여기만 오면 된다;; ㄹㅇ : " + a);
-//        String emailValue = emailInfo.get("email");
-        UserEntity gosuInfo = userService.getUser(a);  // 고수 정보 조회
-        String gosuName = gosuInfo.getName();
-        Integer gosuAge = gosuInfo.getAge();
-        String gosuGender = gosuInfo.getGender();
-        String gosuCategory = gosuInfo.getCategory();
-        String gosuRegion = gosuInfo.getAddress();
-
-        return webClient.post()
-                .uri("/quotation/" + id)  // <-- 고수회원 정보 List type으로 넘겨주기
-                .headers(httpHeaders ->
-                {httpHeaders.add("GosuName", gosuName);
-                    httpHeaders.add("GosuAge", gosuAge.toString());
-                    httpHeaders.add("GosuGender", gosuGender);
-                    httpHeaders.add("GosuCategory", gosuCategory);
-                    httpHeaders.add("GosuRegion", gosuRegion);
-                })
-                .retrieve()
-                .bodyToMono(SurveyDto.class);
-    }*/
 }

@@ -85,7 +85,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
 
                     Map<String, String> error = new HashMap<>();
 
-                    error.put("error_message", "Token Error"); //문자열과 함께 error메세지 저장
+                    error.put("error_message", "Token Error"); //문자열과 함께 error 메세지 저장
 
                     response.setContentType(APPLICATION_JSON_VALUE);
 
