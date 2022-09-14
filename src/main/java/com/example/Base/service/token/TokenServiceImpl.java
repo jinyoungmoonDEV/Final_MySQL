@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Date;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
@@ -66,8 +68,6 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public UserDTO decodeJWT(HttpServletRequest request) {
-
-
 
         String access_token = request.getHeader(AUTHORIZATION);
 

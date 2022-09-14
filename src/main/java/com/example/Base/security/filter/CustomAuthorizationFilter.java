@@ -6,10 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -30,9 +33,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Log4j2
 public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerRequestFilter가 application에 오는 모든 request를 다 인터셉트함(토큰확인 후 서비스 하기위함)
 
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(request.getServletPath().equals("/user/signin") || request.getServletPath().equals("/user/token/refresh") || request.getServletPath().equals("/test/subscribe") ) { //로그인이나 토큰 재발급은 필터를 거칠 필요없어서 바로 보내버린다.
@@ -43,7 +43,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter { //OncePerR
                 try {
                     String token = authorizationHeader.substring("Bearer ".length()); //token만 가져오기 위해서 앞에 적어두었던 문자열 뺴고 변수에 담는다.
 
-                    Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());// 토큰 생성한거와 같은 알고리즘 사용 해야한다(인증을 위해서)
+                    Algorithm algorithm = Algorithm.HMAC256("ad2sf4ger45im32fm3".getBytes());// 토큰 생성한거와 같은 알고리즘 사용 해야한다(인증을 위해서)
 
                     JWTVerifier verifier = JWT.require(algorithm).build(); //기존 알고리즘과 같은 JWTVerifier의 verifier 변수에 빌드
 
