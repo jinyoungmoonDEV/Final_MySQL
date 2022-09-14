@@ -17,3 +17,6 @@ spring:
         format_sql: true
 
     show-sql: true
+
+jwt :
+  secret : dadasfgaswefr21n3oi12n4o23h523rjfweoi1i2n1idnwq

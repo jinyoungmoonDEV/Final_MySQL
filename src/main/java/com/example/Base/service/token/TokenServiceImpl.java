@@ -10,6 +10,7 @@ import com.example.Base.repository.UserRepository;
 import com.example.Base.JWT.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class TokenServiceImpl implements TokenService{
     private final PasswordEncoder passwordEncoder;
 
     private final TokenProvider tokenProvider;
+
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
 
     @Override
     public void loginMethod(UserDTO userDTO, HttpServletResponse response) {
@@ -63,13 +67,15 @@ public class TokenServiceImpl implements TokenService{
     @Override
     public UserDTO decodeJWT(HttpServletRequest request) {
 
+
+
         String access_token = request.getHeader(AUTHORIZATION);
 
         if(access_token != null && access_token.startsWith("Bearer ")) {
             try {
                 String token = access_token.substring("Bearer ".length());
 
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes());
 
                 JWTVerifier verifier = JWT.require(algorithm).build();
 
