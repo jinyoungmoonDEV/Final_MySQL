@@ -116,6 +116,16 @@ public class UserController {
     public ResponseEntity checkUser(HttpServletRequest request) {
 
         UserDTO result = tokenService.decodeJWT(request);
+        String email = result.getEmail();
+
+        String img = userService.getUser(email).getProfileImageURL();
+
+        if (img == null) {
+            img = "/images/111111.jpg";
+        }
+
+        result.setProfileImageURL(img);
+        log.info("img : " + img);
 
         return ResponseEntity.ok().body(result);
     }
@@ -179,7 +189,8 @@ public class UserController {
             // 1. 이미 우리 회원인 (DB에 있는 회원) user 정보 가져온다.
             // 2. 우리 회원이 아니라면 kakaoService 로직에서 유저를 생성하고 유저 정보를 보내주는 방식으로 진행한다.
             Map<String, String> kakaoUserInfo = kakaoService.getUserInfo(accessToken);
-//            String userName = kakaoUserInfo.get("name");
+            String userName = kakaoUserInfo.get("name");
+            log.info("name : " + userName);
             String userEmail = kakaoUserInfo.get("email");
 //            String imageURL = kakaoUserInfo.get("profileImageURL");
             // 로그인 처리 메소드 위임

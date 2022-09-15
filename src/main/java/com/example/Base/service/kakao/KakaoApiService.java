@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class KakaoApiService {
             sb.append("&client_id=080a03e6b451205bd005c2fd5af0b258"); // rest api 키
             // 080a03e6b451205bd005c2fd5af0b258 <-- 낭범 rest api key
 //            sb.append("&redirect_uri=http://localhost:3000/kakaoLogin"); // redirectURL
-            sb.append("&redirect_uri=http://localhost:3000/kakaoLogin"); // redirectURL
+            sb.append("&redirect_uri=http://13.209.99.47:3000/kakaoLogin"); // redirectURL
             sb.append("&code="+code);
             /*--------------------------------------------------------------------------------*/
             // url 형식 -> "https://kauth.kakao.com/oauth/authorize?client_id=a217377ee3f4b5124de42e804382f03e&redirect_uri=http://localhost:10200/login&response_type=code"
@@ -87,8 +88,8 @@ public class KakaoApiService {
     }
 
 
-    public HashMap<String, String> getUserInfo(String accessToken) {
-        HashMap<String, String> userInfoMap = new HashMap<String, String>();
+    public Map<String, String> getUserInfo(String accessToken) {
+        Map<String, String> userInfoMap = new HashMap<String, String>();
         String reqUrl = "https://kapi.kakao.com/v2/user/me";
         try {
             URL url = new URL(reqUrl);
@@ -119,11 +120,16 @@ public class KakaoApiService {
             String name = properties.getAsJsonObject().get("nickname").getAsString();
             String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
             String gender = kakaoAccount.getAsJsonObject().get("gender").getAsString();
-            String profileImageURL = kakaoAccount.get("profileImageURL").getAsString();
+            String profileImageURL = kakaoAccount.get("profile").getAsJsonObject().get("profile_image_url").getAsString();
+
+            log.info("name from  kaka service : " + name);
+            log.info("email from  kaka service : " + email);
+            log.info("img : " + profileImageURL);
 
             userInfoMap.put("name", name);
             userInfoMap.put("email", email);
-            userInfoMap.put("profileImageURL", profileImageURL);
+//            userInfoMap.put("profileImageURL", profileImageURL);
+
 
             // 회원 존재 여부 확인
             if ( userService.getUser(email) == null ) {
@@ -131,7 +137,9 @@ public class KakaoApiService {
                 userDTO.setRole("ROLE_USER");
                 userDTO.setName(name);
                 userDTO.setEmail(email);
+                userDTO.setPassword("tempPassword");
                 userDTO.setGender(gender);
+                userDTO.setProfileImageURL(profileImageURL);
                 userService.saveUser(userDTO);
                 return userInfoMap;  // 방금 생성된 유저 정보 (name, email)
 
