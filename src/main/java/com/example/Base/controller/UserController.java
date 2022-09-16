@@ -110,6 +110,18 @@ public class UserController {
         return ResponseEntity.ok().body(userService.gosuRating(userDTO));
     }
 
+    @PutMapping("/edit")
+    public ResponseEntity editUser(@RequestBody UserDTO userDTO){
+        userService.editUserInfo(userDTO);
+        return  ResponseEntity.created(URI.create("/user/edit")).body("Edit Completed");
+    }
+
+    @DeleteMapping("/withdrawal")
+    public ResponseEntity withdrawal(@RequestBody UserDTO userDTO){
+        userService.withdrawal(userDTO);
+        return ResponseEntity.ok().body("Withdrawal Completed");
+    }
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @GetMapping(value = "/check")

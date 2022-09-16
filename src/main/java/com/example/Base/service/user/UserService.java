@@ -13,6 +13,8 @@ public interface UserService {
     String getName(String email);
     UserEntity clientInfo(HttpServletRequest request);
     String gosuRating(UserDTO userDTO);
+    void editUserInfo(UserDTO userDTO);
+    void withdrawal(UserDTO userDTO);
     String getCategory(String email);
     List getAllExpertsByCategory(String category);
 }

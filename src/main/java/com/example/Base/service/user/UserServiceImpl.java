@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //
 
     private final PasswordEncoder passwordEncoder;
 
-
 //    @Override
 //    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { //DB에서 유저 정보를 불러오는 중요한 메소드
 //        UserEntity user = userRepository.findByEmail(email);
@@ -119,6 +118,25 @@ public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //
         userRepository.save(update.toEntity());
 
         return "Rating Success";
+    }
+
+    @Override
+    public void editUserInfo(UserDTO userDTO) {
+        String email = userDTO.getEmail();
+        UserEntity userInfo = userRepository.findByEmail(email);
+        UserDTO input = userInfo.toDTO();
+
+        input.setAddress(userDTO.getAddress());
+        input.setName(userDTO.getName());
+        input.setProfileImageURL(userDTO.getProfileImageURL());
+
+        userRepository.save(input.toEntity());
+    }
+
+    @Override
+    public void withdrawal(UserDTO userDTO) {
+        String email = userDTO.getEmail();
+        userRepository.deleteByEmail(email);
     }
 
     @Override
