@@ -156,7 +156,7 @@ public class KakaoApiService {
 
         return userInfoMap;
     }
-
+//
 
     public void kakaoLogout(String accessToken) {
         String reqURL = "http://kapi.kakao.com/v1/user/logout";
