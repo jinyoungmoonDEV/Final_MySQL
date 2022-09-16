@@ -45,8 +45,9 @@ public class KakaoApiService {
             sb.append("&client_id=080a03e6b451205bd005c2fd5af0b258"); // rest api 키
             // 080a03e6b451205bd005c2fd5af0b258 <-- 낭범 rest api key
 //            sb.append("&redirect_uri=http://localhost:3000/kakaoLogin"); // redirectURL
-            sb.append("&redirect_uri=http://13.209.99.47:3000/kakaoLogin"); // redirectURL
+            sb.append("&redirect_uri=http://13.209.28.5:3000/kakaoLogin"); // redirectURL
             sb.append("&code="+code);
+            sb.append("&client_secret="+"BY4K3HRgwkUuKoS7asT5zh1gwuzjwB7U");
             /*--------------------------------------------------------------------------------*/
             // url 형식 -> "https://kauth.kakao.com/oauth/authorize?client_id=a217377ee3f4b5124de42e804382f03e&redirect_uri=http://localhost:10200/login&response_type=code"
 //            String kakaoUrl = "grant_type=authorization_code&client_id=a217377ee3f4b5124de42e804382f03e&redirect_uri=http://localhost:10200/login&code=" + code;

@@ -11,9 +11,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/")
-						.allowedOrigins("http://13.209.99.47:3000") //React서버의 url:port
-						.allowedOrigins("http://13.209.99.47:3001") //React서버의 url:port
-						.allowedOrigins("http://13.209.99.47:3002") //React서버의 url:port
+						.allowedOrigins("http://13.209.28.5:3000") //React서버의 url:port
+						.allowedOrigins("http://13.209.28.5:3001") //React서버의 url:port
+						.allowedOrigins("http://13.209.28.5:3002") //React서버의 url:port
 						.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 						.allowedHeaders("*")
 						.allowCredentials(true)
