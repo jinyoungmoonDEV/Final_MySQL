@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     UserEntity findByName(String name);
 
     List<UserEntity> findAllByCategory(String category);
+
+    UserEntity deleteByEmail(String email);
 }
