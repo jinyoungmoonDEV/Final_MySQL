@@ -28,7 +28,6 @@ import java.util.List;
 @Log4j2
 @RequestMapping("/chat")
 @RequiredArgsConstructor
-@Api(value = "ChatController WebClient")
 public class ChatController {
     private final UserServiceImpl userService;
 
@@ -43,7 +42,6 @@ public class ChatController {
             .clientConnector(new ReactorClientHttpConnector(client))
             .build();
 
-    @ApiOperation(value = "생성", notes = "채팅방 생성")
     @PostMapping("/new")
     public Mono<ChatDTO> createRoom(@RequestBody ChatDTO chatDTO){
         String user = chatDTO.getUser();
@@ -65,7 +63,6 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @ApiOperation(value = "입력", notes = "채팅 입력")
     @PostMapping("/insert")
     public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
 
@@ -102,7 +99,6 @@ public class ChatController {
         return ResponseEntity.ok().body("inserted");
     }
 
-    @ApiOperation(value = "이력 조회", notes = "채팅 이력 조회")
     @GetMapping(value = "/sender/room/{room}")
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){
 
@@ -113,7 +109,6 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @ApiOperation(value = "리스트 조회", notes = "채팅 리스트 조회")
     @GetMapping(value = "/list/{email}/{role}")
     public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
