@@ -39,11 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //WebSecurity
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//session사용 안하므로 STATELESS로 끄기
 
-        http.authorizeRequests().antMatchers( "/user/check","/user/token/refresh","/category/**", "/chat/**","/test/subscribe/**", "/user/kakao/**", "/survey/**", "/quotationSubmit/**", "/matchedList/**", "/matchedgosulist/**").permitAll();
+        http.authorizeRequests().antMatchers( "/user/check","/user/token/refresh","/category/**", "/chat/**","/test/subscribe/**", "/user/kakao/**", "/survey/**", "/quotationSubmit/**", "/matchedList/**", "/matchedgosulist/**", "/gosu/**", "/quotation/**").permitAll();
         http.authorizeRequests().antMatchers().hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(GET, "/user/**").hasAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/user/**").permitAll();
-        http.authorizeRequests().antMatchers("/gosu/**", "/quotation/**").hasAuthority("ROLE_GOSU");
+        http.authorizeRequests().antMatchers().hasAuthority("ROLE_GOSU");
         http.authorizeRequests().anyRequest().authenticated(); //나머지 리퀘스트들은 인증이 필요하다
 
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class); //지정된 필터 앞에 커스텀 필터를 추가 하여 먼저 실행
