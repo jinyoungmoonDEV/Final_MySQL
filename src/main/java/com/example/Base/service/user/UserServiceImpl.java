@@ -58,6 +58,12 @@ public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //
     }
 
     @Override
+    public String getEmail(String name) {
+        UserEntity user = userRepository.findByName(name);
+        return user.getEmail();
+    }
+
+    @Override
     public String getName(String email) {
 
         UserEntity info = userRepository.findByEmail(email);
@@ -69,6 +75,8 @@ public class UserServiceImpl implements UserService/*, UserDetailsService*/ { //
             return map.put("회원 여부", "없는 회원입니다.");
         }
     }
+
+
 
     @Override
     public UserEntity saveUser(final UserDTO user) { //유저 정보 DB에 저장

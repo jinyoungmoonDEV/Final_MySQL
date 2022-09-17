@@ -85,15 +85,18 @@ public class ChatController {
         String gosu = input.getGosu();
         String room = input.getRoom().toString();
 
+        String userEmail = userService.getEmail(user);
+        String gosuEmail = userService.getEmail(gosu);
+
         Integer index = input.getInfo().size()-1;
 
         if (input.getInfo().get(index).getUser() != null){
-            log.info(gosu);
-            notificationService.send(gosu,user + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
+            log.info(gosuEmail);
+            notificationService.send(gosuEmail,user + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
         }
         else {
-            log.info(user);
-            notificationService.send(user, gosu + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
+            log.info(userEmail);
+            notificationService.send(userEmail, gosu + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
         }
 
         return ResponseEntity.ok().body("inserted");
