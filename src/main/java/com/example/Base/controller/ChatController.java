@@ -88,7 +88,7 @@ public class ChatController {
         Integer index = input.getInfo().size()-1;
 
         if (input.getInfo().get(index).getUser() != null){
-            log.info("gosu");
+            log.info(gosu);
             notificationService.send(gosu,user + "님의 새로운 채팅", NotificationType.CHAT_INSERTED, room);
         }
         else {
