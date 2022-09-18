@@ -19,6 +19,7 @@ public class SurveyDto {
     private Integer career;  // 유저가 원하는 고수의 경력
     private List region;
     /*--------------------------*/
+    private String gosuEmail;
     private String gosuName;
     private Integer gosuAge;
     private String gosuGender;
