@@ -133,6 +133,7 @@ public class NotificationService {
                     .content(content)
                     .url("/chat/sender/room/" + urlValue)
                     .notificationType(type)
+                    .key(urlValue)
                     .isRead(false)
                     .build();
         }
@@ -142,6 +143,7 @@ public class NotificationService {
                     .content(content)
                     .url("/quotation/" + urlValue)
                     .notificationType(type)
+                    .key(urlValue)
                     .isRead(false)
                     .build();
         }
@@ -152,6 +154,7 @@ public class NotificationService {
                     .content(content)
                     .url("/matchedgosulist/" + urlValue)
                     .notificationType(type)
+                    .key(urlValue)
                     .isRead(false)
                     .build();
         }
