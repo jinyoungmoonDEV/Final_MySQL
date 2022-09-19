@@ -112,14 +112,4 @@ public class QuotationController {
                         .retrieve()
                         .bodyToMono(Object.class);
     }
-
-    @PutMapping("/matchedfinish")
-    public Mono<String> matchedfinish(@RequestBody QuotationDto quotationDto){
-
-        return webClient.put()
-                .uri("/matchedfinish")
-                .bodyValue(quotationDto)
-                .retrieve()
-                .bodyToMono(String.class);
-    }
 }
