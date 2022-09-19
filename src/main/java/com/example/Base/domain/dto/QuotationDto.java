@@ -20,4 +20,5 @@ public class QuotationDto {
     private String gosuRegion; // 위와 동일
     private Integer quotationPrice; // 프론트에서 받아올 것
     private String introduction;  // 프론트에서 받아올 것
+    private String surveyId;
 }
