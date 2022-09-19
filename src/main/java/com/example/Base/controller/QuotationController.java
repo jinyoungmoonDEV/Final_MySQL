@@ -92,12 +92,12 @@ public class QuotationController {
     }
 
     @PostMapping("/matchedgosulist/{status}")
-    public Mono getSurveysAccordingToStatus(@PathVariable Integer a, @RequestBody SurveyIdListDto surveyIdListDto) {
-        log.info("status : " + a);
+    public Mono getSurveysAccordingToStatus(@PathVariable Integer status, @RequestBody SurveyIdListDto surveyIdListDto) {
+        log.info("status : " + status);
         log.info("survey id info : " + surveyIdListDto.getId());
 
         return webClient.post()
-                .uri("/matchedgosulist/" + a)
+                .uri("/matchedgosulist/" + status)
                 .bodyValue(surveyIdListDto)
                 .retrieve()
                 .bodyToMono(List.class);
