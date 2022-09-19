@@ -114,22 +114,22 @@ public class QuotationController {
     }
 
     @PutMapping("/matchedstart")
-    public Mono<String> matchedstart(@RequestBody QuotationDto quotationDto){
+    public Mono matchedstart(@RequestBody QuotationDto quotationDto){
 
         return webClient.put()
                 .uri("/matchedstart")
                 .bodyValue(quotationDto)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(void.class);
     }
 
     @PutMapping("/matchedfinish")
-    public Mono<String> matchedfinish(@RequestBody QuotationDto quotationDto){
+    public Mono matchedfinish(@RequestBody QuotationDto quotationDto){
 
         return webClient.put()
                 .uri("/matchedfinish")
                 .bodyValue(quotationDto)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(void.class);
     }
 }
