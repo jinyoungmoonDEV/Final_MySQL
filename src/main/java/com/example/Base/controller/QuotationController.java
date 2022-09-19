@@ -91,7 +91,7 @@ public class QuotationController {
                 .bodyToMono(List.class);
     }
 
-    @PostMapping("/matchedgosulist/{status}")
+    @PostMapping("/matchedgosulist/status/{status}")
     public Mono getSurveysAccordingToStatus(@PathVariable Integer status, @RequestBody SurveyIdListDto surveyIdListDto) {
         log.info("status : " + status);
         log.info("survey id info : " + surveyIdListDto.getId());
