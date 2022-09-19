@@ -97,7 +97,7 @@ public class QuotationController {
         log.info("survey id info : " + surveyIdListDto.getId());
 
         return webClient.post()
-                .uri("/matchedgosulist/" + status)
+                .uri("/matchedgosulist/status/" + status)
                 .bodyValue(surveyIdListDto)
                 .retrieve()
                 .bodyToMono(List.class);
