@@ -2,6 +2,7 @@ package com.example.Base.controller;
 
 import com.example.Base.SSE.NotificationService;
 import com.example.Base.SSE.domain.NotificationType;
+import com.example.Base.domain.dto.GaraDto;
 import com.example.Base.domain.dto.QuotationDto;
 import com.example.Base.domain.dto.SurveyIdListDto;
 import com.example.Base.domain.dto.user.UserDTO;
@@ -124,11 +125,11 @@ public class QuotationController {
     }
 
     @PutMapping("/matchedfinish")
-    public Mono<Map> matchedfinish(@RequestBody QuotationDto quotationDto){
+    public Mono<Map> matchedfinish(@RequestBody GaraDto gara){
 
         return webClient.put()
                 .uri("/matchedfinish")
-                .bodyValue(quotationDto)
+                .bodyValue(gara)
                 .retrieve()
                 .bodyToMono(Map.class);
     }
