@@ -2,11 +2,8 @@ package com.example.Base.controller;
 
 import com.example.Base.SSE.NotificationService;
 import com.example.Base.SSE.domain.NotificationType;
-import com.example.Base.domain.dto.QuotationDto;
 import com.example.Base.domain.dto.chat.ChatDTO;
 import com.example.Base.service.user.UserServiceImpl;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
