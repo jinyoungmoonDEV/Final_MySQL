@@ -42,7 +42,7 @@ public class ChatController {
             .clientConnector(new ReactorClientHttpConnector(client))
             .build();
 
-    @PostMapping("/new")
+    @PostMapping("/new") //채팅방 생성
     public Mono<ChatDTO> createRoom(@RequestBody ChatDTO chatDTO){
         String user = chatDTO.getUser();
         String gosu = chatDTO.getGosu();
@@ -63,7 +63,7 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @PostMapping("/insert")
+    @PostMapping("/insert") //채팅 input 저장
     public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
 
         Mono<ChatDTO> result =  webClient.post()
@@ -99,7 +99,7 @@ public class ChatController {
         return ResponseEntity.ok().body("inserted");
     }
 
-    @GetMapping(value = "/sender/room/{room}")
+    @GetMapping(value = "/sender/room/{room}") //채팅이력 불러오기
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){
 
         return webClient.get()
@@ -109,7 +109,7 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @GetMapping(value = "/list/{email}/{role}")
+    @GetMapping(value = "/list/{email}/{role}") //채팅방 리스트 불러오기
     public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
         return webClient.get()
