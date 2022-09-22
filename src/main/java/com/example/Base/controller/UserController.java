@@ -1,11 +1,6 @@
 package com.example.Base.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.Base.JWT.TokenProvider;
-import com.example.Base.SSE.NotificationService;
 import com.example.Base.domain.dto.error.ResponseDTO;
 import com.example.Base.domain.dto.user.UserDTO;
 import com.example.Base.domain.entity.UserEntity;
@@ -14,14 +9,10 @@ import com.example.Base.service.kakao.KakaoApiService;
 import com.example.Base.service.token.TokenServiceImpl;
 import com.example.Base.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

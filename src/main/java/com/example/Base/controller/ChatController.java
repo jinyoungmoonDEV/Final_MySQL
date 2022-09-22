@@ -43,32 +43,29 @@ public class ChatController {
             .build();
 
     @PostMapping("/new") //채팅방 생성
-    public Mono<ChatDTO> createRoom(@RequestBody ChatDTO chatDTO){
-        String user = chatDTO.getUser();
-        String gosu = chatDTO.getGosu();
+    public Mono<ChatDTO> createRoom(@RequestBody ChatDTO info){
+        String user = info.getUser();
+        String gosu = info.getGosu();
 
         String userName = userService.getName(user);
         String gosuName = userService.getName(gosu);
 
-        ChatDTO input = ChatDTO.builder()
-                .user(userName)
-                .gosu(gosuName)
-                .info(chatDTO.getInfo())
-                .build();
+        info.setUser(userName);
+        info.setGosu(gosuName);
 
         return webClient.post()
                 .uri("/chat/new")
-                .bodyValue(input)
+                .bodyValue(info)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
     }
 
     @PostMapping("/insert") //채팅 input 저장
-    public ResponseEntity setMsg(@RequestBody ChatDTO chatDTO){
+    public ResponseEntity setMsg(@RequestBody ChatDTO insert){
 
         Mono<ChatDTO> result =  webClient.post()
                 .uri("/chat/insert")
-                .bodyValue(chatDTO)
+                .bodyValue(insert)
                 .retrieve()
                 .bodyToMono(ChatDTO.class);
 
@@ -112,6 +109,7 @@ public class ChatController {
     @GetMapping(value = "/list/{email}/{role}") //채팅방 리스트 불러오기
     public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
+
         return webClient.get()
                 .uri("/chat/list/"+name+"/"+role)
                 .acceptCharset(Charset.forName("UTF-8"))
