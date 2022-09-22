@@ -22,26 +22,26 @@ public class UserEntity {
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
     @Column(unique = true)
-    private String name;
+    private String name; //이름
 
-    private Integer age;
+    private Integer age; //나이
 
     @Column(unique = true)
-    private String email;
+    private String email; //이메일
 
-    private String category;
-    private String password;
-    private Integer career;
-    private String gender;
-    private String address;
-    private String profileImageURL;
+    private String category; //카테고리
+    private String password; //비밀번호
+    private Integer career; //경력
+    private String gender; //성별
+    private String address; //주소
+    private String profileImageURL; //프로필 이미지 주소
 //    private String category1;
 //    private String category2;
 //    private String category3;
-    private Double count1;
+    private Double count1; //별점
     private Integer count2;
     private Integer count3;
-    private String role;
+    private String role; //권한
 
     public UserDTO toDTO() {
         UserDTO userDTO = UserDTO.builder()
