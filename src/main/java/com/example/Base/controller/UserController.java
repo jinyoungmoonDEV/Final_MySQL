@@ -37,7 +37,7 @@ public class UserController {
 
     Cookie cookie = new Cookie("Cookie","forSecure");
 
-    @PostMapping("/users") //로그인
+    @PostMapping(value = "/users") //로그인
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
@@ -60,7 +60,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user") //회원 가입
+    @PostMapping(value = "/user") //회원 가입
     public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_USER"); //일반 사용자 권한
@@ -75,7 +75,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/gosu") //전문가 회원 가입
+    @PostMapping(value = "/gosu") //전문가 회원 가입
     public ResponseEntity saveHelper(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_GOSU"); //전문가 권한
@@ -90,23 +90,23 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users") //클라이언트의 모든 정보
+    @GetMapping(value = "/users") //클라이언트의 모든 정보
     public ResponseEntity userinfo(HttpServletRequest request){
         return ResponseEntity.ok().body(userService.clientInfo(request));
     }
 
-    @PutMapping("/gosu") //전문가 회원
+    @PutMapping(value = "/gosu") //전문가 회원
     public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
         return ResponseEntity.ok().body(userService.gosuRating(userDTO));
     }
 
-    @PutMapping("/users") //사용자 정보 업데이트
+    @PutMapping(value = "/users") //사용자 정보 업데이트
     public ResponseEntity editUser(@RequestBody UserDTO userDTO){
         userService.editUserInfo(userDTO);
         return  ResponseEntity.created(URI.create("/api/users")).body("Edit Completed");
     }
 
-    @DeleteMapping("/users") //회원 탈퇴
+    @DeleteMapping(value = "/users") //회원 탈퇴
     public ResponseEntity withdrawal(@RequestBody UserDTO userDTO){
         userService.withdrawal(userDTO);
         return ResponseEntity.ok().body("Withdrawal Completed");
@@ -132,7 +132,7 @@ public class UserController {
         return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping("/token/refresh") //로그인 연장(Refresh Token)
+    @GetMapping(value = "/token/refresh") //로그인 연장(Refresh Token)
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String refresh_token = request.getHeader(AUTHORIZATION);
         if(refresh_token != null && refresh_token.startsWith("Bearer ")) {
@@ -181,7 +181,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/kakao/{code}") //카카오 소셜 로그인
+    @GetMapping(value = "/kakao/{code}") //카카오 소셜 로그인
     public ResponseEntity kakaoLogin(@PathVariable String code, HttpServletResponse response) {
         log.info("code from front : " + code);
         try {

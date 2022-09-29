@@ -39,7 +39,7 @@ public class ChatController {
             .clientConnector(new ReactorClientHttpConnector(client))
             .build();
 
-    @PostMapping("/room") //채팅방 생성
+    @PostMapping(value = "/room") //채팅방 생성
     public Mono<ChatDTO> createRoom(@RequestBody ChatDTO info){
         String user = info.getUser();
         String gosu = info.getGosu();
@@ -57,7 +57,7 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @PostMapping("/insert") //채팅 input 저장
+    @PostMapping(value = "/insert") //채팅 input 저장
     public ResponseEntity setMsg(@RequestBody ChatDTO insert){
 
         Mono<ChatDTO> result =  webClient.post()
