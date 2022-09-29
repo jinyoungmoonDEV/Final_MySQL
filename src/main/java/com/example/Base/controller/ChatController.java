@@ -39,7 +39,7 @@ public class ChatController {
             .clientConnector(new ReactorClientHttpConnector(client))
             .build();
 
-    @PostMapping("/new") //채팅방 생성
+    @PostMapping("/room") //채팅방 생성
     public Mono<ChatDTO> createRoom(@RequestBody ChatDTO info){
         String user = info.getUser();
         String gosu = info.getGosu();
@@ -93,7 +93,7 @@ public class ChatController {
         return ResponseEntity.ok().body("inserted");
     }
 
-    @GetMapping(value = "/sender/room/{room}") //채팅이력 불러오기
+    @GetMapping(value = "/room/{room}") //채팅이력 불러오기
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){
 
         return webClient.get()
