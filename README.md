@@ -8,7 +8,7 @@
   6. 카테고리, 매칭기능 - 홍진협
   7. 소셜 로그인 기능 - 홍진협
 
-# ● 프로젝트 구동 자료
+# ● 프로젝트 구동 자료 (문진영 작성)
 <a href="https://velog.io/@answlsdud98/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%8B%A4%EC%A0%9C-%EA%B5%AC%EB%8F%99-%EC%9E%90%EB%A3%8C"><img src="https://img.shields.io/badge/Velog-3DDC84?style=flat-square&logo=Blogger&logoColor=white"/></a>
 
 # ● 프로젝트 코드 설명 블로그 (문진영 작성)
