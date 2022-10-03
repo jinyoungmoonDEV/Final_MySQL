@@ -37,7 +37,7 @@ public class UserController {
 
     Cookie cookie = new Cookie("Cookie","forSecure");
 
-    @PostMapping(value = "/users") //로그인
+    @PostMapping(value = "/user") //로그인
     //ResponseEntity는  httpentity를 상속받는 결과 데이터와 HTTP 상태 코드를 직접 제어할 수 있는 클래스이고, 응답으로 변환될 정보를 모두 담은 요소들을 객체로 사용 된다.
     public ResponseEntity login(@RequestBody  UserDTO userDTO, HttpServletResponse response){
         try {
@@ -60,7 +60,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/user") //회원 가입
+    @PostMapping(value = "/user/signup") //회원 가입
     public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_USER"); //일반 사용자 권한
@@ -75,7 +75,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/gosu") //전문가 회원 가입
+    @PostMapping(value = "/gosu/signup") //전문가 회원 가입
     public ResponseEntity saveHelper(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_GOSU"); //전문가 권한
@@ -90,23 +90,23 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/users") //클라이언트의 모든 정보
+    @GetMapping(value = "/user") //클라이언트의 모든 정보
     public ResponseEntity userinfo(HttpServletRequest request){
         return ResponseEntity.ok().body(userService.clientInfo(request));
     }
 
-    @PutMapping(value = "/gosu") //전문가 회원
+    @PutMapping(value = "/gosu") //전문가 회원 정보 수정
     public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
         return ResponseEntity.ok().body(userService.gosuRating(userDTO));
     }
 
-    @PutMapping(value = "/users") //사용자 정보 업데이트
+    @PutMapping(value = "/user") //사용자 정보 업데이트
     public ResponseEntity editUser(@RequestBody UserDTO userDTO){
         userService.editUserInfo(userDTO);
         return  ResponseEntity.created(URI.create("/api/users")).body("Edit Completed");
     }
 
-    @DeleteMapping(value = "/users") //회원 탈퇴
+    @DeleteMapping(value = "/user") //회원 탈퇴
     public ResponseEntity withdrawal(@RequestBody UserDTO userDTO){
         userService.withdrawal(userDTO);
         return ResponseEntity.ok().body("Withdrawal Completed");
