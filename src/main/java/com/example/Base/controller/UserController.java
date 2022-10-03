@@ -75,7 +75,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/gosu/signup") //전문가 회원 가입
+    @PostMapping(value = "/gosu") //전문가 회원 가입
     public ResponseEntity saveHelper(@RequestBody UserDTO userDTO) {
         try {
             userDTO.setRole("ROLE_GOSU"); //전문가 권한
@@ -95,7 +95,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.clientInfo(request));
     }
 
-    @PutMapping(value = "/gosu") //전문가 회원 정보 수정
+    @PutMapping(value = "/gosu") //전문가 회원
     public ResponseEntity gosuRating(@RequestBody UserDTO userDTO){
         return ResponseEntity.ok().body(userService.gosuRating(userDTO));
     }
