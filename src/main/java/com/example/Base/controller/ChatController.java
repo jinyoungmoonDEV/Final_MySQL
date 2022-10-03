@@ -23,7 +23,6 @@ import java.util.List;
 
 @RestController
 @Log4j2
-@RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatController {
     private final UserServiceImpl userService;
@@ -39,7 +38,7 @@ public class ChatController {
             .clientConnector(new ReactorClientHttpConnector(client))
             .build();
 
-    @PostMapping(value = "/room") //채팅방 생성
+    @PostMapping(value = "/chat/room") //채팅방 생성
     public Mono<ChatDTO> createRoom(@RequestBody ChatDTO info){
         String user = info.getUser();
         String gosu = info.getGosu();
@@ -57,7 +56,7 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @PostMapping(value = "/insert") //채팅 input 저장
+    @PostMapping(value = "/chat") //채팅 input 저장
     public ResponseEntity setMsg(@RequestBody ChatDTO insert){
 
         Mono<ChatDTO> result =  webClient.post()
@@ -93,7 +92,7 @@ public class ChatController {
         return ResponseEntity.ok().body("inserted");
     }
 
-    @GetMapping(value = "/room/{room}") //채팅이력 불러오기
+    @GetMapping(value = "/chat/{room}") //채팅이력 불러오기
     public Mono<ChatDTO> getMsg(@PathVariable Integer room){
 
         return webClient.get()
@@ -103,7 +102,7 @@ public class ChatController {
                 .bodyToMono(ChatDTO.class);
     }
 
-    @GetMapping(value = "/list/{email}/{role}") //채팅방 리스트 불러오기
+    @GetMapping(value = "/chat/{email}/{role}") //채팅방 리스트 불러오기
     public Flux<ChatDTO> getList(@PathVariable String email, @PathVariable String role){
         String name = userService.getName(email);
 
